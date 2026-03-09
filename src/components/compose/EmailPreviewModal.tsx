@@ -44,8 +44,8 @@ const EmailPreviewModal = ({
 
         <div className="overflow-y-auto" style={{ maxHeight: "calc(90vh - 52px)" }}>
           {/* Email body rendered */}
-          <div className="bg-muted/30 px-4 py-6">
-            <div className="mx-auto max-w-md rounded-lg border bg-card shadow-sm">
+          <div className="bg-muted/30 px-4 py-8">
+            <div className="mx-auto rounded-lg border bg-card shadow-sm" style={{ width: 600, maxWidth: "100%" }}>
               {/* Logo */}
               <div className="border-b px-6 py-5">
                 <div className="flex items-center gap-2">
