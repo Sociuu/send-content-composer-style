@@ -128,7 +128,7 @@ const ContentPanel = ({
             })}
           </div>
           {contentAccessMode === "grant-all" && (
-            <p className="mt-2 rounded-md bg-accent/10 px-2.5 py-1.5 text-[10px] leading-snug text-accent-foreground">
+            <p className="mt-2 rounded-md bg-amber-50 border border-amber-200 px-2.5 py-1.5 text-[10px] leading-snug text-amber-900">
               <strong>Note:</strong> This will modify access permissions on the selected content items. Recipients who don't currently have access will be individually granted it.
             </p>
           )}
