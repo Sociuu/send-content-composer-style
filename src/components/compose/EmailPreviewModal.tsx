@@ -26,7 +26,7 @@ const EmailPreviewModal = ({
 }: EmailPreviewModalProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-hidden p-0 sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-hidden p-0 sm:max-w-3xl">
         <DialogHeader className="sr-only">
           <DialogTitle>Email Preview</DialogTitle>
         </DialogHeader>
