@@ -11,6 +11,7 @@ import InlineSettingsSection from "@/components/compose/InlineSettingsSection";
 import SendingDrawer from "@/components/compose/SendingDrawer";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreSendChecklistPanel from "@/components/compose/PreSendChecklistPanel";
+import PreviewActions from "@/components/compose/PreviewActions";
 import { Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
@@ -144,9 +145,16 @@ const ComposePage = () => {
                   <BodyEditor value={body} onChange={setBody} />
                 </div>
 
-                <div className="px-5 pb-4">
+              <div className="px-5 pb-4">
                   <FooterEditor value={footer} onChange={setFooter} />
                 </div>
+
+                {/* Preview actions for email */}
+                {channel === "email" && (
+                  <div className="border-t px-5 py-2.5">
+                    <PreviewActions />
+                  </div>
+                )}
 
                 {/* Inline Content Area */}
                 <div className="px-5 pb-5">
