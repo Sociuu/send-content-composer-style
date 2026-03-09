@@ -238,6 +238,16 @@ const ComposePage = () => {
           />
         )}
       </div>
+
+      {/* Email Preview Modal */}
+      <EmailPreviewModal
+        open={showEmailPreview}
+        onOpenChange={setShowEmailPreview}
+        subject={subject}
+        body={body}
+        footer={footer}
+        contentItems={contentItems}
+      />
     </div>
   );
 };
