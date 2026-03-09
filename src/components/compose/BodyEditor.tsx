@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import MergeTagButton from "./MergeTagButton";
 
 interface BodyEditorProps {
   value: string;
@@ -15,8 +16,28 @@ const BodyEditor = ({ value, onChange }: BodyEditorProps) => {
     el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
   }, [value]);
 
+  const handleInsertTag = (tag: string) => {
+    const el = ref.current;
+    if (el) {
+      const start = el.selectionStart ?? value.length;
+      const end = el.selectionEnd ?? value.length;
+      const newValue = value.slice(0, start) + tag + value.slice(end);
+      onChange(newValue);
+      requestAnimationFrame(() => {
+        el.focus();
+        const pos = start + tag.length;
+        el.setSelectionRange(pos, pos);
+      });
+    } else {
+      onChange(value + tag);
+    }
+  };
+
   return (
     <div className="flex-1 py-4">
+      <div className="mb-2 flex justify-end">
+        <MergeTagButton onInsert={handleInsertTag} />
+      </div>
       <textarea
         ref={ref}
         value={value}
