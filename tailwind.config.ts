@@ -47,6 +47,16 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        sociuu: {
+          purple: "hsl(var(--sociuu-purple-deep))",
+          "purple-light": "hsl(var(--sociuu-purple-light))",
+          teal: "hsl(var(--sociuu-teal))",
+          lime: "hsl(var(--sociuu-lime))",
+          "lime-foreground": "hsl(var(--sociuu-lime-foreground))",
+          surface: "hsl(var(--sociuu-surface))",
+          "surface-elevated": "hsl(var(--sociuu-surface-elevated))",
+          "border-subtle": "hsl(var(--sociuu-border-subtle))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
