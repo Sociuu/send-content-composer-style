@@ -6,8 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Zap, CalendarClock, Timer, Clock, RotateCcw } from "lucide-react";
 import SendModeSettings, { type SendMode } from "./settings/SendModeSettings";
 import RecipientFinalizationSettings, { type FinalizationMode } from "./settings/RecipientFinalizationSettings";
 import PulsingSettings, { type PulsingMode, type TimeUnit } from "./settings/PulsingSettings";
@@ -21,6 +20,26 @@ interface ConfigureSendModalProps {
   hasGroupRecipients: boolean;
   contentDistribution: ContentDistribution;
 }
+
+const SectionWrapper = ({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof Timer;
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <div className="rounded-xl border bg-card p-4">
+    <div className="mb-3 flex items-center gap-2">
+      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-3.5 w-3.5 text-primary" />
+      </div>
+      <span className="text-xs font-semibold text-foreground">{title}</span>
+    </div>
+    {children}
+  </div>
+);
 
 const ConfigureSendModal = ({ contentCount, hasGroupRecipients, contentDistribution }: ConfigureSendModalProps) => {
   const [open, setOpen] = useState(false);
@@ -46,7 +65,7 @@ const ConfigureSendModal = ({ contentCount, hasGroupRecipients, contentDistribut
   const [resendEnabled, setResendEnabled] = useState(false);
   const [resendDays, setResendDays] = useState(3);
 
-  const actionLabel = sendMode === "now" ? "Send Message" : "Schedule Message";
+  const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
 
   return (
     <>
@@ -69,35 +88,17 @@ const ConfigureSendModal = ({ contentCount, hasGroupRecipients, contentDistribut
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-sm font-semibold">Configure Sending</DialogTitle>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg p-0">
+          <DialogHeader className="sticky top-0 z-10 border-b bg-card px-6 py-4">
+            <DialogTitle className="text-sm font-semibold">Review & Send</DialogTitle>
+            <p className="text-[11px] text-muted-foreground">
+              Configure delivery options before sending your message.
+            </p>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-6 py-2">
-            <div className="space-y-6">
-              <SendModeSettings
-                mode={sendMode}
-                onModeChange={setSendMode}
-                scheduleDate={scheduleDate}
-                onScheduleDateChange={setScheduleDate}
-                scheduleTime={scheduleTime}
-                onScheduleTimeChange={setScheduleTime}
-                timezone={timezone}
-                onTimezoneChange={setTimezone}
-              />
-
-              {sendMode === "schedule" && hasGroupRecipients && (
-                <RecipientFinalizationSettings
-                  mode={finalizationMode}
-                  onModeChange={setFinalizationMode}
-                  removeDroppedMembers={removeDropped}
-                  onRemoveDroppedMembersChange={setRemoveDropped}
-                />
-              )}
-            </div>
-
-            <div className="space-y-6">
+          <div className="space-y-3 px-6 py-4">
+            {/* 1. Pulsing */}
+            <SectionWrapper icon={Timer} title="Pulsing">
               <PulsingSettings
                 enabled={pulsingEnabled}
                 onEnabledChange={setPulsingEnabled}
@@ -115,44 +116,83 @@ const ConfigureSendModal = ({ contentCount, hasGroupRecipients, contentDistribut
                 estimatedLast="Mar 10, 2026 at 13:00"
               />
 
+              {/* Delivery Window nested under Pulsing when enabled */}
               {pulsingEnabled && (
-                <DeliveryWindowSettings
-                  enabled={deliveryWindowEnabled}
-                  onEnabledChange={setDeliveryWindowEnabled}
-                  allowedDays={allowedDays}
-                  onAllowedDaysChange={setAllowedDays}
-                  startTime={windowStartTime}
-                  onStartTimeChange={setWindowStartTime}
-                  endTime={windowEndTime}
-                  onEndTimeChange={setWindowEndTime}
-                  timezone={windowTimezone}
-                  onTimezoneChange={setWindowTimezone}
-                />
+                <div className="mt-3 border-t pt-3">
+                  <DeliveryWindowSettings
+                    enabled={deliveryWindowEnabled}
+                    onEnabledChange={setDeliveryWindowEnabled}
+                    allowedDays={allowedDays}
+                    onAllowedDaysChange={setAllowedDays}
+                    startTime={windowStartTime}
+                    onStartTimeChange={setWindowStartTime}
+                    endTime={windowEndTime}
+                    onEndTimeChange={setWindowEndTime}
+                    timezone={windowTimezone}
+                    onTimezoneChange={setWindowTimezone}
+                  />
+                </div>
               )}
+            </SectionWrapper>
 
+            {/* 2. Resend */}
+            <SectionWrapper icon={RotateCcw} title="Resend">
               <ResendSettings
                 enabled={resendEnabled}
                 onEnabledChange={setResendEnabled}
                 daysAfter={resendDays}
                 onDaysAfterChange={setResendDays}
               />
-            </div>
+            </SectionWrapper>
+
+            {/* 3. Send Mode — final step */}
+            <SectionWrapper
+              icon={sendMode === "now" ? Zap : CalendarClock}
+              title="When to Send"
+            >
+              <SendModeSettings
+                mode={sendMode}
+                onModeChange={setSendMode}
+                scheduleDate={scheduleDate}
+                onScheduleDateChange={setScheduleDate}
+                scheduleTime={scheduleTime}
+                onScheduleTimeChange={setScheduleTime}
+                timezone={timezone}
+                onTimezoneChange={setTimezone}
+              />
+
+              {/* Recipient finalization — only for scheduled group sends */}
+              {sendMode === "schedule" && hasGroupRecipients && (
+                <div className="mt-3 border-t pt-3">
+                  <RecipientFinalizationSettings
+                    mode={finalizationMode}
+                    onModeChange={setFinalizationMode}
+                    removeDroppedMembers={removeDropped}
+                    onRemoveDroppedMembersChange={setRemoveDropped}
+                  />
+                </div>
+              )}
+            </SectionWrapper>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center justify-end gap-2 pt-1">
-            <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+          {/* Sticky footer */}
+          <div className="sticky bottom-0 flex items-center justify-between border-t bg-card px-6 py-3">
+            <button
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
               Cancel
-            </Button>
+            </button>
             <Button
               size="sm"
               onClick={() => {
                 setOpen(false);
                 setConfirmOpen(true);
               }}
+              className="gap-1.5"
             >
               {actionLabel}
+              <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </div>
         </DialogContent>
