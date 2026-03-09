@@ -48,8 +48,8 @@ const MergeTagButton = ({ onInsert, compact }: MergeTagButtonProps) => {
           compact && "px-1.5"
         )}
       >
-        <span className="font-mono text-[10px]">{"{}"}</span>
-        {!compact && <span>Merge</span>}
+        <span className="font-mono text-[10px]">{"{·}"}</span>
+        <span>{compact ? "Tags" : "Merge Tags"}</span>
         <ChevronDown className="h-2.5 w-2.5" />
       </button>
 

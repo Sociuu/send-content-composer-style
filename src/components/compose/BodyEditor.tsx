@@ -1,5 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import MergeTagButton from "./MergeTagButton";
+import MergeTagEditor, { getInsertTag } from "./MergeTagEditor";
 
 interface BodyEditorProps {
   value: string;
@@ -7,27 +8,13 @@ interface BodyEditorProps {
 }
 
 const BodyEditor = ({ value, onChange }: BodyEditorProps) => {
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
-  }, [value]);
+  const editorWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleInsertTag = (tag: string) => {
-    const el = ref.current;
-    if (el) {
-      const start = el.selectionStart ?? value.length;
-      const end = el.selectionEnd ?? value.length;
-      const newValue = value.slice(0, start) + tag + value.slice(end);
-      onChange(newValue);
-      requestAnimationFrame(() => {
-        el.focus();
-        const pos = start + tag.length;
-        el.setSelectionRange(pos, pos);
-      });
+    const editorEl = editorWrapperRef.current?.querySelector(".merge-tag-editor") as HTMLDivElement | null;
+    const insert = getInsertTag(editorEl);
+    if (insert) {
+      insert(tag);
     } else {
       onChange(value + tag);
     }
@@ -38,15 +25,16 @@ const BodyEditor = ({ value, onChange }: BodyEditorProps) => {
       <div className="mb-2 flex justify-end">
         <MergeTagButton onInsert={handleInsertTag} />
       </div>
-      <textarea
-        ref={ref}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Write your message..."
-        rows={3}
-        className="w-full resize-none overflow-y-auto bg-transparent text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
-        style={{ maxHeight: 320 }}
-      />
+      <div ref={editorWrapperRef}>
+        <MergeTagEditor
+          value={value}
+          onChange={onChange}
+          placeholder="Write your message..."
+          multiline
+          maxHeight={320}
+          className="text-sm leading-relaxed text-foreground"
+        />
+      </div>
     </div>
   );
 };
