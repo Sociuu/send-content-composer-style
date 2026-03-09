@@ -1,8 +1,10 @@
-import { X, List, Shuffle, SplitSquareHorizontal } from "lucide-react";
+import { X, List, Shuffle, SplitSquareHorizontal, ShieldCheck, ShieldPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ContentCard from "./ContentCard";
 import type { ContentItem } from "@/types/content";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
+
+export type ContentAccessMode = "available" | "grant-all";
 
 interface ContentPanelProps {
   visible: boolean;
@@ -12,12 +14,29 @@ interface ContentPanelProps {
   onToggleNetwork: (contentId: string, networkId: string) => void;
   contentDistribution: ContentDistribution;
   onContentDistributionChange: (d: ContentDistribution) => void;
+  contentAccessMode: ContentAccessMode;
+  onContentAccessModeChange: (mode: ContentAccessMode) => void;
 }
 
 const DIST_OPTIONS: { value: ContentDistribution; label: string; icon: typeof List }[] = [
   { value: "manual", label: "Keep order", icon: List },
   { value: "randomize", label: "Randomize", icon: Shuffle },
   { value: "split", label: "Split send", icon: SplitSquareHorizontal },
+];
+
+const ACCESS_OPTIONS: { value: ContentAccessMode; label: string; description: string; icon: typeof ShieldCheck }[] = [
+  {
+    value: "available",
+    label: "Send available",
+    description: "Each recipient only receives content they already have access to. No access changes are made.",
+    icon: ShieldCheck,
+  },
+  {
+    value: "grant-all",
+    label: "Grant access to all",
+    description: "All recipients will be granted access to all selected content before sending.",
+    icon: ShieldPlus,
+  },
 ];
 
 const ContentPanel = ({
@@ -28,6 +47,8 @@ const ContentPanel = ({
   onToggleNetwork,
   contentDistribution,
   onContentDistributionChange,
+  contentAccessMode,
+  onContentAccessModeChange,
 }: ContentPanelProps) => {
   if (!visible) return null;
 
@@ -47,6 +68,72 @@ const ContentPanel = ({
           <X className="h-3.5 w-3.5" />
         </button>
       </div>
+
+      {/* Content Access Mode - shown when 1+ items */}
+      {items.length >= 1 && (
+        <div className="border-b px-4 py-3">
+          <label className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Recipient Access
+          </label>
+          <div className="space-y-1.5">
+            {ACCESS_OPTIONS.map((opt) => {
+              const Icon = opt.icon;
+              const isSelected = contentAccessMode === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => onContentAccessModeChange(opt.value)}
+                  className={cn(
+                    "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-all",
+                    isSelected
+                      ? "border-primary/30 bg-primary/5"
+                      : "border-transparent hover:bg-secondary/60"
+                  )}
+                >
+                  <Icon
+                    className={cn(
+                      "mt-0.5 h-3.5 w-3.5 shrink-0",
+                      isSelected ? "text-primary" : "text-muted-foreground"
+                    )}
+                  />
+                  <div className="min-w-0">
+                    <span
+                      className={cn(
+                        "block text-xs font-medium",
+                        isSelected ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {opt.label}
+                    </span>
+                    <span className="mt-0.5 block text-[10px] leading-snug text-muted-foreground">
+                      {opt.description}
+                    </span>
+                  </div>
+                  <div
+                    className={cn(
+                      "ml-auto mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full border-2 transition-colors",
+                      isSelected
+                        ? "border-primary bg-primary"
+                        : "border-muted-foreground/30"
+                    )}
+                  >
+                    {isSelected && (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <div className="h-1 w-1 rounded-full bg-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          {contentAccessMode === "grant-all" && (
+            <p className="mt-2 rounded-md bg-accent/10 px-2.5 py-1.5 text-[10px] leading-snug text-accent-foreground">
+              <strong>Note:</strong> This will modify access permissions on the selected content items. Recipients who don't currently have access will be individually granted it.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Content Distribution - shown when 2+ items */}
       {items.length >= 2 && (
