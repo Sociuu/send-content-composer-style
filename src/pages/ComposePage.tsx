@@ -18,13 +18,14 @@ import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
 import type { ContentDistribution } from "@/components/compose/settings/ContentDistributionSettings";
 
-type LayoutVariant = "drawer" | "modal" | "inline" | "checklist";
+type LayoutVariant = "drawer" | "modal" | "inline" | "checklist" | "inline-content";
 
 const VARIANTS: { key: LayoutVariant; label: string }[] = [
   { key: "drawer", label: "A: Drawer" },
   { key: "modal", label: "B: Modal" },
   { key: "inline", label: "C: Inline" },
   { key: "checklist", label: "D: Checklist" },
+  { key: "inline-content", label: "E: Inline Content" },
 ];
 
 const ComposePage = () => {
