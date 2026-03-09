@@ -109,7 +109,7 @@ const ComposePage = () => {
           </div>
 
           {/* Bottom Sending Drawer */}
-          <SendingDrawer />
+          <SendingDrawer contentCount={contentItems.length} hasGroupRecipients={true} />
         </div>
 
         {/* Right Content Panel */}
