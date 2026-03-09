@@ -240,6 +240,8 @@ const ComposePage = () => {
             onToggleNetwork={handleToggleNetwork}
             contentDistribution={contentDistribution}
             onContentDistributionChange={setContentDistribution}
+            contentAccessMode={contentAccessMode}
+            onContentAccessModeChange={setContentAccessMode}
           />
         )}
       </div>
