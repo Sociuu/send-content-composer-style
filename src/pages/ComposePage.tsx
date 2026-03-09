@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ComposeHeader from "@/components/compose/ComposeHeader";
 import ChannelSelector from "@/components/compose/ChannelSelector";
 import RecipientField from "@/components/compose/RecipientField";
@@ -6,8 +6,10 @@ import ComposeField from "@/components/compose/ComposeField";
 import BodyEditor from "@/components/compose/BodyEditor";
 import FooterEditor from "@/components/compose/FooterEditor";
 import ContentPanel from "@/components/compose/ContentPanel";
+import InlineContentArea from "@/components/compose/InlineContentArea";
 import SendingDrawer from "@/components/compose/SendingDrawer";
 import { Paperclip } from "lucide-react";
+import { mockContentItems, type ContentItem } from "@/types/content";
 
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
@@ -15,7 +17,27 @@ const ComposePage = () => {
   const [preview, setPreview] = useState("");
   const [body, setBody] = useState("");
   const [footer, setFooter] = useState("");
-  const [showContent, setShowContent] = useState(true); // auto-show since mock content exists
+  const [showContentPanel, setShowContentPanel] = useState(true);
+  const [contentItems, setContentItems] = useState<ContentItem[]>(mockContentItems);
+
+  const handleRemoveContent = useCallback((id: string) => {
+    setContentItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  const handleToggleNetwork = useCallback((contentId: string, networkId: string) => {
+    setContentItems((prev) =>
+      prev.map((item) =>
+        item.id === contentId
+          ? {
+              ...item,
+              networks: item.networks.map((n) =>
+                n.id === networkId ? { ...n, enabled: !n.enabled } : n
+              ),
+            }
+          : item
+      )
+    );
+  }, []);
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -30,14 +52,14 @@ const ComposePage = () => {
               <div className="mb-5 flex items-center justify-between">
                 <ChannelSelector selected={channel} onChange={setChannel} />
                 <button
-                  onClick={() => setShowContent(!showContent)}
+                  onClick={() => setShowContentPanel(!showContentPanel)}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   <Paperclip className="h-3.5 w-3.5" />
-                  Content
-                  {showContent && (
+                  Panel
+                  {contentItems.length > 0 && (
                     <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                      2
+                      {contentItems.length}
                     </span>
                   )}
                 </button>
@@ -73,6 +95,15 @@ const ComposePage = () => {
                 <div className="px-5 pb-4">
                   <FooterEditor value={footer} onChange={setFooter} />
                 </div>
+
+                {/* Inline Content Area */}
+                <div className="px-5 pb-5">
+                  <InlineContentArea
+                    items={contentItems}
+                    onRemove={handleRemoveContent}
+                    onToggleNetwork={handleToggleNetwork}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -82,7 +113,13 @@ const ComposePage = () => {
         </div>
 
         {/* Right Content Panel */}
-        <ContentPanel visible={showContent} onClose={() => setShowContent(false)} />
+        <ContentPanel
+          visible={showContentPanel}
+          onClose={() => setShowContentPanel(false)}
+          items={contentItems}
+          onRemove={handleRemoveContent}
+          onToggleNetwork={handleToggleNetwork}
+        />
       </div>
     </div>
   );
