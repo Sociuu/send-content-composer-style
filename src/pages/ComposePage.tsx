@@ -12,6 +12,7 @@ import SendingDrawer from "@/components/compose/SendingDrawer";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreSendChecklistPanel from "@/components/compose/PreSendChecklistPanel";
 import PreviewActions from "@/components/compose/PreviewActions";
+import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
 import { Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
