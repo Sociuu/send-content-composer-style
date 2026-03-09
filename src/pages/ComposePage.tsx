@@ -38,6 +38,7 @@ const ComposePage = () => {
   const [contentItems, setContentItems] = useState<ContentItem[]>(mockContentItems);
   const [contentDistribution, setContentDistribution] = useState<ContentDistribution>("manual");
   const [variant, setVariant] = useState<LayoutVariant>("drawer");
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
 
   const handleRemoveContent = useCallback((id: string) => {
     setContentItems((prev) => prev.filter((item) => item.id !== id));
