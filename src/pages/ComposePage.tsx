@@ -17,6 +17,7 @@ import { Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
 import type { ContentDistribution } from "@/components/compose/settings/ContentDistributionSettings";
+import type { ContentAccessMode } from "@/components/compose/ContentPanel";
 
 type LayoutVariant = "drawer" | "modal" | "inline" | "checklist" | "inline-content";
 
