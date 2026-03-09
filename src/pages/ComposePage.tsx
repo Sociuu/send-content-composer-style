@@ -145,9 +145,16 @@ const ComposePage = () => {
                   <BodyEditor value={body} onChange={setBody} />
                 </div>
 
-                <div className="px-5 pb-4">
+              <div className="px-5 pb-4">
                   <FooterEditor value={footer} onChange={setFooter} />
                 </div>
+
+                {/* Preview actions for email */}
+                {channel === "email" && (
+                  <div className="border-t px-5 py-2.5">
+                    <PreviewActions />
+                  </div>
+                )}
 
                 {/* Inline Content Area */}
                 <div className="px-5 pb-5">
