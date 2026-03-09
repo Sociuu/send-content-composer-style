@@ -154,7 +154,7 @@ const ComposePage = () => {
                 {/* Preview actions for email */}
                 {channel === "email" && (
                   <div className="border-t px-5 py-2.5">
-                    <PreviewActions />
+                    <PreviewActions onViewPreview={() => setShowEmailPreview(true)} />
                   </div>
                 )}
 
