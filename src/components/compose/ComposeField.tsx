@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import MergeTagButton from "./MergeTagButton";
+import MergeTagEditor, { getInsertTag } from "./MergeTagEditor";
 
 interface ComposeFieldProps {
   label: string;
@@ -10,20 +11,13 @@ interface ComposeFieldProps {
 }
 
 const ComposeField = ({ label, placeholder, value, onChange, small }: ComposeFieldProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const editorWrapperRef = useRef<HTMLDivElement>(null);
 
   const handleInsertTag = (tag: string) => {
-    const el = inputRef.current;
-    if (el) {
-      const start = el.selectionStart ?? value.length;
-      const end = el.selectionEnd ?? value.length;
-      const newValue = value.slice(0, start) + tag + value.slice(end);
-      onChange(newValue);
-      requestAnimationFrame(() => {
-        el.focus();
-        const pos = start + tag.length;
-        el.setSelectionRange(pos, pos);
-      });
+    const editorEl = editorWrapperRef.current?.querySelector(".merge-tag-editor") as HTMLDivElement | null;
+    const insert = getInsertTag(editorEl);
+    if (insert) {
+      insert(tag);
     } else {
       onChange(value + tag);
     }
@@ -32,15 +26,14 @@ const ComposeField = ({ label, placeholder, value, onChange, small }: ComposeFie
   return (
     <div className="flex items-center gap-2 border-b px-0 py-3">
       <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">{label}</span>
-      <input
-        ref={inputRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground ${
-          small ? "text-sm" : "text-sm font-medium"
-        }`}
-      />
+      <div ref={editorWrapperRef} className="flex-1">
+        <MergeTagEditor
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={small ? "text-sm" : "text-sm font-medium"}
+        />
+      </div>
       <MergeTagButton onInsert={handleInsertTag} compact />
     </div>
   );
