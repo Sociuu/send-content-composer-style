@@ -159,14 +159,16 @@ const ComposePage = () => {
                   </div>
                 )}
 
-                {/* Inline Content Area */}
-                <div className="px-5 pb-5">
-                  <InlineContentArea
-                    items={contentItems}
-                    onRemove={handleRemoveContent}
-                    onToggleNetwork={handleToggleNetwork}
-                  />
-                </div>
+                {/* Inline Content Area — only shown in inline-content variant */}
+                {variant === "inline-content" && (
+                  <div className="px-5 pb-5">
+                    <InlineContentArea
+                      items={contentItems}
+                      onRemove={handleRemoveContent}
+                      onToggleNetwork={handleToggleNetwork}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
