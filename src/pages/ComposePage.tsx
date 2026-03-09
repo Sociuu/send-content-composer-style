@@ -12,6 +12,7 @@ import SendingDrawer from "@/components/compose/SendingDrawer";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreSendChecklistPanel from "@/components/compose/PreSendChecklistPanel";
 import PreviewActions from "@/components/compose/PreviewActions";
+import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
 import { Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
@@ -37,6 +38,7 @@ const ComposePage = () => {
   const [contentItems, setContentItems] = useState<ContentItem[]>(mockContentItems);
   const [contentDistribution, setContentDistribution] = useState<ContentDistribution>("manual");
   const [variant, setVariant] = useState<LayoutVariant>("drawer");
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
 
   const handleRemoveContent = useCallback((id: string) => {
     setContentItems((prev) => prev.filter((item) => item.id !== id));
@@ -152,7 +154,7 @@ const ComposePage = () => {
                 {/* Preview actions for email */}
                 {channel === "email" && (
                   <div className="border-t px-5 py-2.5">
-                    <PreviewActions />
+                    <PreviewActions onViewPreview={() => setShowEmailPreview(true)} />
                   </div>
                 )}
 
@@ -236,6 +238,16 @@ const ComposePage = () => {
           />
         )}
       </div>
+
+      {/* Email Preview Modal */}
+      <EmailPreviewModal
+        open={showEmailPreview}
+        onOpenChange={setShowEmailPreview}
+        subject={subject}
+        body={body}
+        footer={footer}
+        contentItems={contentItems}
+      />
     </div>
   );
 };
