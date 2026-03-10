@@ -60,6 +60,31 @@ const UTM_LABELS: Record<string, string> = {
   utm_content: "Content",
 };
 
+/* ─── Key/Value validation helpers ─── */
+
+const MAX_KEY_LENGTH = 128;
+const MAX_VALUE_LENGTH = 512;
+
+function sanitizeKey(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_\-.]/g, "")
+    .slice(0, MAX_KEY_LENGTH);
+}
+
+function sanitizeValue(raw: string): string {
+  const parts = raw.split(/({{[^}]+}})/g);
+  return parts
+    .map((part) =>
+      part.startsWith("{{") && part.endsWith("}}")
+        ? part
+        : part.replace(/ /g, "%20")
+    )
+    .join("")
+    .slice(0, MAX_VALUE_LENGTH);
+}
+
 function getUtmWarning(params: TrackingParam[]): string | null {
   const utmKeys = params.map((p) => p.key).filter((k) => k.startsWith("utm_"));
   if (utmKeys.length === 0) return null;
