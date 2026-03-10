@@ -40,12 +40,10 @@ interface ContentPanelProps {
   onContentDistributionChange: (d: ContentDistribution) => void;
   contentAccessMode: ContentAccessMode;
   onContentAccessModeChange: (mode: ContentAccessMode) => void;
-  utmMode: UTMMode;
-  onUTMModeChange: (m: UTMMode) => void;
-  utmSharedParams: UTMParams;
-  onUTMSharedParamsChange: (p: UTMParams) => void;
-  utmPerContentParams: Record<string, UTMParams>;
-  onUTMPerContentParamsChange: (contentId: string, p: UTMParams) => void;
+  trackingConfig: TrackingConfig;
+  onTrackingConfigChange: (c: TrackingConfig) => void;
+  contentTrackingOverrides: Record<string, ContentTrackingOverride>;
+  onContentTrackingOverrideChange: (contentId: string, o: ContentTrackingOverride) => void;
 }
 
 const DIST_OPTIONS: { value: ContentDistribution; label: string; icon: typeof List }[] = [
