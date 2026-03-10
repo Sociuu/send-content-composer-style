@@ -45,7 +45,7 @@ const MergeTagButton = ({ onInsert, compact }: MergeTagButtonProps) => {
           )}
         >
           <Tag className="h-2.5 w-2.5" />
-          <span>{compact ? "Tags" : "Merge Tags"}</span>
+          <span>Merge Tags</span>
           <ChevronDown className="h-2.5 w-2.5" />
         </button>
       </PopoverTrigger>
