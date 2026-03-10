@@ -70,7 +70,7 @@ interface SendingDeliveryPanelProps {
   onResendDaysChange: (n: number) => void;
 }
 
-type ModalId = "pulsing" | "resend" | null;
+type ModalId = "pulsing" | "resend" | "when" | null;
 
 const DAY_LABELS: Record<string, string> = {
   mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
