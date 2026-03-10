@@ -298,6 +298,7 @@ const ComposePage = () => {
         subject={subject}
         previewText={preview}
         bodyLength={body.length}
+        footerLength={footer.length}
         recipients={recipients}
         contentCount={contentItems.length}
         contentDistribution={contentDistribution}

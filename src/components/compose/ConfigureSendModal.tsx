@@ -45,6 +45,7 @@ interface ReviewSendModalProps {
   subject: string;
   previewText: string;
   bodyLength: number;
+  footerLength: number;
 
   // Recipients
   recipients: string[];
@@ -149,6 +150,7 @@ const ConfigureSendModal = ({
   subject,
   previewText,
   bodyLength,
+  footerLength,
   recipients,
   contentCount,
   contentDistribution,
@@ -193,16 +195,23 @@ const ConfigureSendModal = ({
         <div className="px-6 py-2 divide-y divide-border">
           {/* Message overview */}
           <ReviewSection icon={FileText} title="Message">
-            <p className="text-sm font-medium truncate">{messageTitle}</p>
-            <div className="mt-1.5 space-y-0.5">
+            <div className="space-y-0.5">
+              <ReviewValue label="Title" value={messageTitle} />
               <ReviewValue label="Channel" value={CHANNEL_CONFIG[channel].label} />
-              {channel === "email" && subject && (
-                <ReviewValue label="Subject" value={subject} />
+              {channel === "email" && (
+                <ReviewValue
+                  label="Subject"
+                  value={subject ? `✓ ${subject.length > 40 ? subject.slice(0, 40) + "…" : subject}` : "—"}
+                />
               )}
-              {channel === "email" && previewText && (
-                <ReviewValue label="Preview text" value={previewText} />
+              {channel === "email" && (
+                <ReviewValue
+                  label="Preview text"
+                  value={previewText ? "✓ Added" : "— Not set"}
+                />
               )}
-              <ReviewValue label="Body" value={bodyLength > 0 ? `${bodyLength} characters` : "Empty"} />
+              <ReviewValue label="Body" value={bodyLength > 0 ? `✓ ${bodyLength} chars` : "— Empty"} />
+              <ReviewValue label="Footer" value={footerLength > 0 ? "✓ Added" : "— Not set"} />
             </div>
           </ReviewSection>
 
