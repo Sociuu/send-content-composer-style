@@ -2,6 +2,8 @@ import { useState, useCallback } from "react";
 import ComposeHeader, { generateDefaultTitle } from "@/components/compose/ComposeHeader";
 import ChannelSelector from "@/components/compose/ChannelSelector";
 import RecipientField from "@/components/compose/RecipientField";
+import SenderField from "@/components/compose/SenderField";
+import ReplyToFields from "@/components/compose/ReplyToFields";
 import ComposeField from "@/components/compose/ComposeField";
 import BodyEditor from "@/components/compose/BodyEditor";
 import FooterEditor from "@/components/compose/FooterEditor";
@@ -11,6 +13,7 @@ import SendingDeliveryPanel from "@/components/compose/SendingDeliveryPanel";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreviewActions from "@/components/compose/PreviewActions";
 import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
+import { SlackPreviewModal, SlackPreviewActions } from "@/components/compose/SlackPreviewModal";
 import { Paperclip, ArrowRight, AlertCircle, PanelRightOpen, PanelRightClose } from "lucide-react";
 import {
   Tooltip,
@@ -47,7 +50,12 @@ const ComposePage = () => {
   const [contentItems, setContentItems] = useState<ContentItem[]>(mockContentItems);
   const [contentDistribution, setContentDistribution] = useState<ContentDistribution>("manual");
   const [showEmailPreview, setShowEmailPreview] = useState(false);
+  const [showSlackPreview, setShowSlackPreview] = useState(false);
   const [contentAccessMode, setContentAccessMode] = useState<ContentAccessMode>("available");
+
+  // Reply-to state
+  const [replyToName, setReplyToName] = useState("");
+  const [replyToEmail, setReplyToEmail] = useState("");
 
   // Sending & Delivery state (persists with draft)
   const [sendMode, setSendMode] = useState<SendMode>("now");
@@ -152,6 +160,7 @@ const ComposePage = () => {
               {/* Compose Card */}
               <div className="rounded-xl border bg-card compose-shadow">
                 <div className="px-5">
+                  {channel === "email" && <SenderField />}
                   <RecipientField selected={recipients} onSelectedChange={setRecipients} channel={channel} />
                   {channel === "email" && (
                     <>
@@ -167,6 +176,12 @@ const ComposePage = () => {
                         value={preview}
                         onChange={setPreview}
                         small
+                      />
+                      <ReplyToFields
+                        replyToName={replyToName}
+                        onReplyToNameChange={setReplyToName}
+                        replyToEmail={replyToEmail}
+                        onReplyToEmailChange={setReplyToEmail}
                       />
                     </>
                   )}
@@ -184,6 +199,13 @@ const ComposePage = () => {
                 {channel === "email" && (
                   <div className="border-t px-5 py-2.5">
                     <PreviewActions onViewPreview={() => setShowEmailPreview(true)} />
+                  </div>
+                )}
+
+                {/* Preview actions for Slack */}
+                {channel === "slack" && (
+                  <div className="border-t px-5 py-2.5">
+                    <SlackPreviewActions onViewPreview={() => setShowSlackPreview(true)} />
                   </div>
                 )}
               </div>
@@ -306,6 +328,14 @@ const ComposePage = () => {
         subject={subject}
         body={body}
         footer={footer}
+        contentItems={contentItems}
+      />
+
+      {/* Slack Preview Modal */}
+      <SlackPreviewModal
+        open={showSlackPreview}
+        onOpenChange={setShowSlackPreview}
+        body={body}
         contentItems={contentItems}
       />
 
