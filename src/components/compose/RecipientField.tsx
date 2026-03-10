@@ -19,11 +19,11 @@ const emailRecipients: Recipient[] = [
   { name: "Marketing Team", type: "group", count: 24 },
   { name: "Engineering", type: "group", count: 56 },
   { name: "Sales", type: "group", count: 31 },
-  { name: "John Smith", type: "user" },
-  { name: "Jane Doe", type: "user" },
-  { name: "Alex Johnson", type: "user" },
-  { name: "Sarah Williams", type: "user" },
-  { name: "Mike Brown", type: "user" },
+  { name: "John Smith", type: "user", count: 1 },
+  { name: "Jane Doe", type: "user", count: 1 },
+  { name: "Alex Johnson", type: "user", count: 1 },
+  { name: "Sarah Williams", type: "user", count: 1 },
+  { name: "Mike Brown", type: "user", count: 1 },
 ];
 
 const messagingRecipients: Recipient[] = [
@@ -83,9 +83,9 @@ const RecipientChip = ({
     >
       <Icon className={`h-3 w-3 shrink-0 ${isAll ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
       {recipient.name}
-      {recipient.count != null && (
+      {recipient.count != null && recipient.type !== "user" && (
         <span className={`text-[10px] font-normal ${isAll ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-          · ~{recipient.count}
+          · {recipient.count}
         </span>
       )}
       <button
@@ -114,6 +114,16 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
     [selected, availableRecipients]
   );
 
+  // Compute total recipient count (deduplicated conceptually — in real app this would be server-side)
+  const totalCount = useMemo(() => {
+    const hasAll = selectedRecipients.some((r) => r.type === "all");
+    if (hasAll) {
+      const allEntry = availableRecipients.find((r) => r.type === "all");
+      return allEntry?.count || 0;
+    }
+    return selectedRecipients.reduce((sum, r) => sum + (r.count || 0), 0);
+  }, [selectedRecipients, availableRecipients]);
+
   const filtered = availableRecipients.filter(
     (r) =>
       !selected.includes(r.name) &&
@@ -127,9 +137,19 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
   const overflowChannels = overflowRecipients.filter((r) => r.type === "channel");
 
   const addRecipient = (name: string) => {
-    onSelectedChange([...selected, name]);
+    const recipient = availableRecipients.find((r) => r.name === name);
+    if (recipient?.type === "all") {
+      // Selecting "All" replaces everything
+      onSelectedChange([name]);
+    } else {
+      // Remove "All employees" if selecting something specific
+      const withoutAll = selected.filter((s) => {
+        const r = availableRecipients.find((ar) => ar.name === s);
+        return r?.type !== "all";
+      });
+      onSelectedChange([...withoutAll, name]);
+    }
     setInputValue("");
-    // Keep suggestions open so user can select more
   };
 
   const removeRecipient = (name: string) => {
@@ -213,6 +233,13 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
             className="min-w-[80px] flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
+
+        {/* Total recipient count */}
+        {selected.length > 0 && (
+          <span className="shrink-0 pt-1 text-[11px] font-medium text-muted-foreground">
+            {totalCount.toLocaleString()} {isMessaging ? "members" : "recipients"}
+          </span>
+        )}
       </div>
 
       {showSuggestions && filtered.length > 0 && (
@@ -233,8 +260,8 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
               >
                 <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="flex-1">{recipient.name}</span>
-                {recipient.count != null && (
-                  <span className="text-[10px] text-muted-foreground">~{recipient.count}</span>
+                {recipient.count != null && recipient.type !== "user" && (
+                  <span className="text-[10px] text-muted-foreground">{recipient.count}</span>
                 )}
                 <span className="text-[10px] text-muted-foreground capitalize">
                   {typeLabel}
