@@ -190,12 +190,14 @@ const ContentPanel = ({
       ? "Each recipient gets one item"
       : "Content sent in current order";
 
-  const utmActive = !!(utmSharedParams.source || utmSharedParams.campaign || Object.keys(utmPerContentParams).some(k => utmPerContentParams[k]?.source));
-  const utmSummary = utmMode === "per-content"
-    ? "Per-content UTM parameters"
-    : utmSharedParams.source
-    ? `source=${utmSharedParams.source}${utmSharedParams.campaign ? `, campaign=${utmSharedParams.campaign}` : ""}`
-    : "No UTM parameters configured";
+  const hasGlobalTracking = !!(trackingConfig.utmSource || trackingConfig.utmCampaign || trackingConfig.customParams.length > 0);
+  const overrideCount = Object.values(contentTrackingOverrides).filter((o) => o.mode !== "inherit").length;
+  const trackingActive = hasGlobalTracking || overrideCount > 0;
+  const trackingSummary = hasGlobalTracking
+    ? `source=${trackingConfig.utmSource || "—"}${trackingConfig.utmCampaign ? `, campaign=${trackingConfig.utmCampaign}` : ""}${trackingConfig.customParams.length > 0 ? ` +${trackingConfig.customParams.length} custom` : ""}${overrideCount > 0 ? ` · ${overrideCount} override${overrideCount > 1 ? "s" : ""}` : ""}`
+    : overrideCount > 0
+    ? `${overrideCount} content override${overrideCount > 1 ? "s" : ""}`
+    : "No tracking configured";
 
   return (
     <div className="w-[360px] shrink-0 border-l bg-card flex flex-col overflow-hidden">
