@@ -266,6 +266,7 @@ const ContentPanel = ({
               compact
               onRemove={onRemove}
               onToggleNetwork={onToggleNetwork}
+              showDragHandle={contentDistribution === "manual"}
             />
           ))}
           {items.length === 0 && (

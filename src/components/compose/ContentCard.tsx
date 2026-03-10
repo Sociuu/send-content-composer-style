@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   GripVertical,
   Trash2,
@@ -18,6 +19,7 @@ interface ContentCardProps {
   compact?: boolean;
   onRemove: (id: string) => void;
   onToggleNetwork: (contentId: string, networkId: string) => void;
+  showDragHandle?: boolean;
 }
 
 const typeConfig = {
@@ -34,7 +36,7 @@ const formatBadge = {
   social: { label: "Social", className: "bg-sociuu-purple-light text-primary" },
 };
 
-const ContentCard = ({ item, compact, onRemove, onToggleNetwork }: ContentCardProps) => {
+const ContentCard = ({ item, compact, onRemove, onToggleNetwork, showDragHandle }: ContentCardProps) => {
   const typeInfo = typeConfig[item.type];
   const TypeIcon = typeInfo.icon;
   const format = formatBadge[item.format];
@@ -43,7 +45,10 @@ const ContentCard = ({ item, compact, onRemove, onToggleNetwork }: ContentCardPr
     <div className="group relative rounded-xl border bg-card transition-all hover:border-primary/20 hover:compose-shadow">
       {/* Header: drag handle + meta + remove */}
       <div className="flex items-center gap-2 border-b px-3 py-2">
-        <div className="cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing">
+        <div className={cn(
+          "cursor-grab text-muted-foreground active:cursor-grabbing transition-opacity",
+          showDragHandle ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        )}>
           <GripVertical className="h-4 w-4" />
         </div>
 
