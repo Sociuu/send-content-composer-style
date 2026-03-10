@@ -150,6 +150,7 @@ const ConfigureSendModal = ({
   subject,
   previewText,
   bodyLength,
+  footerLength,
   recipients,
   contentCount,
   contentDistribution,
