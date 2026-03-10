@@ -83,6 +83,11 @@ const RecipientChip = ({
     >
       <Icon className={`h-3 w-3 shrink-0 ${isAll ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
       {recipient.name}
+      {recipient.count != null && (
+        <span className={`text-[10px] font-normal ${isAll ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+          · ~{recipient.count}
+        </span>
+      )}
       <button
         onClick={onRemove}
         className="text-muted-foreground transition-colors hover:text-foreground"
