@@ -65,6 +65,21 @@ export const mockContentItems: ContentItem[] = [
     ],
   },
   {
+    id: "3b",
+    type: "link",
+    format: "native",
+    title: "Case Study: Nordic Retail",
+    text: "How we helped Nordic Retail increase employee advocacy engagement by 340% in just 6 months.",
+    thumbnail: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=200&h=200&fit=crop",
+    linkTitle: "Nordic Retail Case Study – 340% Growth",
+    linkDomain: "sociuu.com/cases",
+    networks: [
+      { id: "linkedin", name: "LinkedIn", enabled: true },
+      { id: "facebook", name: "Facebook", enabled: true },
+      { id: "x", name: "X", enabled: false },
+    ],
+  },
+  {
     id: "4",
     type: "text",
     format: "social",
