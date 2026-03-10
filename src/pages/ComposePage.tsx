@@ -93,7 +93,14 @@ const ComposePage = () => {
     setContentTrackingOverrides((prev) => ({ ...prev, [contentId]: override }));
   }, []);
 
-  const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
+  // Validation
+  const missingFields: string[] = [];
+  if (recipients.length === 0) missingFields.push("Recipients");
+  if (channel === "email" && !subject.trim()) missingFields.push("Subject");
+  if (!body.trim()) missingFields.push("Body");
+  if (sendMode === "schedule" && !scheduleDate) missingFields.push("Schedule date");
+
+  const canSend = missingFields.length === 0;
 
   return (
     <div className="flex h-screen flex-col bg-background">
