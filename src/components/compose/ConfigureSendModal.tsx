@@ -43,8 +43,7 @@ const SectionWrapper = ({
   </div>
 );
 
-const ConfigureSendModal = ({ contentCount, hasGroupRecipients, contentDistribution }: ConfigureSendModalProps) => {
-  const [open, setOpen] = useState(false);
+const ConfigureSendModal = ({ open, onOpenChange, contentCount, hasGroupRecipients, contentDistribution }: ConfigureSendModalProps) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [sendMode, setSendMode] = useState<SendMode>("now");
