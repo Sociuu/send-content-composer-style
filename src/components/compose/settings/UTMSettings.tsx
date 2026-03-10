@@ -46,7 +46,6 @@ const UTMField = ({ label, placeholder, value, onChange }: UTMFieldProps) => {
     const end = inputRef.selectionEnd ?? value.length;
     const newValue = value.slice(0, start) + tag + value.slice(end);
     onChange(newValue);
-    // Restore cursor after tag
     setTimeout(() => {
       inputRef.setSelectionRange(start + tag.length, start + tag.length);
       inputRef.focus();
@@ -96,36 +95,11 @@ const UTMForm = ({ params, onChange }: UTMFormProps) => {
 
   return (
     <div className="space-y-2">
-      <UTMField
-        label="utm_source"
-        placeholder="e.g. employee_advocacy"
-        value={params.source}
-        onChange={update("source")}
-      />
-      <UTMField
-        label="utm_medium"
-        placeholder="e.g. {{network_name}}"
-        value={params.medium}
-        onChange={update("medium")}
-      />
-      <UTMField
-        label="utm_campaign"
-        placeholder="e.g. q1_brand_2026"
-        value={params.campaign}
-        onChange={update("campaign")}
-      />
-      <UTMField
-        label="utm_term"
-        placeholder="e.g. {{recipient_id}}"
-        value={params.term}
-        onChange={update("term")}
-      />
-      <UTMField
-        label="utm_content"
-        placeholder="e.g. {{content_id}}"
-        value={params.content}
-        onChange={update("content")}
-      />
+      <UTMField label="utm_source" placeholder="e.g. employee_advocacy" value={params.source} onChange={update("source")} />
+      <UTMField label="utm_medium" placeholder="e.g. {{network_name}}" value={params.medium} onChange={update("medium")} />
+      <UTMField label="utm_campaign" placeholder="e.g. q1_brand_2026" value={params.campaign} onChange={update("campaign")} />
+      <UTMField label="utm_term" placeholder="e.g. {{recipient_id}}" value={params.term} onChange={update("term")} />
+      <UTMField label="utm_content" placeholder="e.g. {{content_id}}" value={params.content} onChange={update("content")} />
     </div>
   );
 };
@@ -139,6 +113,7 @@ interface UTMSettingsProps {
   onSharedParamsChange: (p: UTMParams) => void;
   perContentParams: Record<string, UTMParams>;
   onPerContentParamsChange: (contentId: string, p: UTMParams) => void;
+  embedded?: boolean;
 }
 
 const UTMSettings = ({
@@ -150,6 +125,7 @@ const UTMSettings = ({
   onSharedParamsChange,
   perContentParams,
   onPerContentParamsChange,
+  embedded = false,
 }: UTMSettingsProps) => {
   const [expandedContent, setExpandedContent] = useState<string | null>(
     linkContentIds[0] || null
@@ -157,20 +133,23 @@ const UTMSettings = ({
 
   if (linkContentIds.length === 0) return null;
 
-  return (
-    <div className="border-b px-4 py-3">
-      <div className="mb-2 flex items-center gap-1.5">
-        <Tag className="h-3 w-3 text-muted-foreground" />
-        <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          UTM Parameters
-        </label>
-      </div>
+  const inner = (
+    <>
+      {!embedded && (
+        <div className="mb-2 flex items-center gap-1.5">
+          <Tag className="h-3 w-3 text-muted-foreground" />
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            UTM Parameters
+          </label>
+        </div>
+      )}
 
-      <p className="mb-2.5 text-[10px] leading-snug text-muted-foreground">
-        Add tracking parameters to link-type content URLs. Use merge tags for dynamic values.
-      </p>
+      {!embedded && (
+        <p className="mb-2.5 text-[10px] leading-snug text-muted-foreground">
+          Add tracking parameters to link-type content URLs. Use merge tags for dynamic values.
+        </p>
+      )}
 
-      {/* Mode selector — only when multiple links */}
       {linkContentIds.length > 1 && (
         <div className="mb-3 flex gap-1 rounded-lg bg-secondary p-0.5">
           <button
@@ -236,6 +215,14 @@ const UTMSettings = ({
           })}
         </div>
       )}
+    </>
+  );
+
+  if (embedded) return <div>{inner}</div>;
+
+  return (
+    <div className="border-b px-4 py-3">
+      {inner}
     </div>
   );
 };
