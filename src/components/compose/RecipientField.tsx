@@ -129,7 +129,7 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
   const addRecipient = (name: string) => {
     onSelectedChange([...selected, name]);
     setInputValue("");
-    setShowSuggestions(false);
+    // Keep suggestions open so user can select more
   };
 
   const removeRecipient = (name: string) => {
