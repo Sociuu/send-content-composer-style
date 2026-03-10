@@ -190,11 +190,12 @@ const ContentPanel = ({
       ? "Each recipient gets one item"
       : "Content sent in current order";
 
-  const hasGlobalTracking = !!(trackingConfig.utmSource || trackingConfig.utmCampaign || trackingConfig.customParams.length > 0);
+  const hasGlobalTracking = trackingConfig.params.length > 0;
+  const filledParams = trackingConfig.params.filter((p) => p.value);
   const overrideCount = Object.values(contentTrackingOverrides).filter((o) => o.mode !== "inherit").length;
   const trackingActive = hasGlobalTracking || overrideCount > 0;
-  const trackingSummary = hasGlobalTracking
-    ? `source=${trackingConfig.utmSource || "—"}${trackingConfig.utmCampaign ? `, campaign=${trackingConfig.utmCampaign}` : ""}${trackingConfig.customParams.length > 0 ? ` +${trackingConfig.customParams.length} custom` : ""}${overrideCount > 0 ? ` · ${overrideCount} override${overrideCount > 1 ? "s" : ""}` : ""}`
+  const trackingSummary = filledParams.length > 0
+    ? `${filledParams.length} tag${filledParams.length > 1 ? "s" : ""} configured${overrideCount > 0 ? ` · ${overrideCount} override${overrideCount > 1 ? "s" : ""}` : ""}`
     : overrideCount > 0
     ? `${overrideCount} content override${overrideCount > 1 ? "s" : ""}`
     : "No tracking configured";
