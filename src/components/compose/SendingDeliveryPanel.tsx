@@ -34,8 +34,12 @@ interface SendingDeliveryPanelProps {
   timezone: string;
   onTimezoneChange: (tz: string) => void;
 
-  hasGroupRecipients: boolean;
+  showFinalization: boolean;
+  isAllEmployees?: boolean;
   finalizationMode: FinalizationMode;
+  onFinalizationModeChange: (m: FinalizationMode) => void;
+  removeDropped: boolean;
+  onRemoveDroppedChange: (v: boolean) => void;
   onFinalizationModeChange: (m: FinalizationMode) => void;
   removeDropped: boolean;
   onRemoveDroppedChange: (v: boolean) => void;
