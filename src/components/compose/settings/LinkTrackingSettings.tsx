@@ -251,8 +251,9 @@ const ParamRow = ({
           <input
             type="text"
             value={param.key}
-            onChange={(e) => onChange({ ...param, key: e.target.value })}
-            placeholder="parameter name"
+            onChange={(e) => onChange({ ...param, key: sanitizeKey(e.target.value) })}
+            placeholder="parameter-name"
+            maxLength={MAX_KEY_LENGTH}
             className="h-6 flex-1 rounded border-none bg-transparent px-0 text-[11px] font-medium text-foreground outline-none placeholder:text-muted-foreground/40"
           />
         )}
