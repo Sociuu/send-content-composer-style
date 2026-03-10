@@ -63,12 +63,9 @@ const MergeTagButton = ({ onInsert, compact }: MergeTagButtonProps) => {
                     onInsert(tag.value);
                     setOpen(false);
                   }}
-                  className="flex w-full items-center justify-between px-3 py-1.5 text-left text-[11px] transition-colors hover:bg-secondary"
+                  className="flex w-full items-center px-3 py-1.5 text-left text-[11px] text-foreground transition-colors hover:bg-secondary"
                 >
-                  <span className="text-foreground">{tag.label}</span>
-                  <span className="font-mono text-[9px] text-muted-foreground">
-                    {tag.value}
-                  </span>
+                  {tag.label}
                 </button>
               ))}
             </div>
