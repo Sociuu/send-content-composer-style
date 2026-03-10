@@ -40,9 +40,6 @@ interface SendingDeliveryPanelProps {
   onFinalizationModeChange: (m: FinalizationMode) => void;
   removeDropped: boolean;
   onRemoveDroppedChange: (v: boolean) => void;
-  onFinalizationModeChange: (m: FinalizationMode) => void;
-  removeDropped: boolean;
-  onRemoveDroppedChange: (v: boolean) => void;
 
   pulsingEnabled: boolean;
   onPulsingEnabledChange: (v: boolean) => void;
