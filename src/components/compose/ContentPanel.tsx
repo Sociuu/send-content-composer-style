@@ -26,6 +26,7 @@ import LinkTrackingSettings, {
   type TrackingConfig,
   type ContentTrackingOverride,
   EMPTY_TRACKING,
+  cleanTrackingParams,
 } from "./settings/LinkTrackingSettings";
 
 export type ContentAccessMode = "available" | "grant-all";
