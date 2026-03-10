@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import ContentCard from "./ContentCard";
 import type { ContentItem } from "@/types/content";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
+import UTMSettings, { type UTMMode, type UTMParams, EMPTY_UTM } from "./settings/UTMSettings";
 
 export type ContentAccessMode = "available" | "grant-all";
 
@@ -16,6 +17,12 @@ interface ContentPanelProps {
   onContentDistributionChange: (d: ContentDistribution) => void;
   contentAccessMode: ContentAccessMode;
   onContentAccessModeChange: (mode: ContentAccessMode) => void;
+  utmMode: UTMMode;
+  onUTMModeChange: (m: UTMMode) => void;
+  utmSharedParams: UTMParams;
+  onUTMSharedParamsChange: (p: UTMParams) => void;
+  utmPerContentParams: Record<string, UTMParams>;
+  onUTMPerContentParamsChange: (contentId: string, p: UTMParams) => void;
 }
 
 const DIST_OPTIONS: { value: ContentDistribution; label: string; icon: typeof List }[] = [
@@ -49,8 +56,18 @@ const ContentPanel = ({
   onContentDistributionChange,
   contentAccessMode,
   onContentAccessModeChange,
+  utmMode,
+  onUTMModeChange,
+  utmSharedParams,
+  onUTMSharedParamsChange,
+  utmPerContentParams,
+  onUTMPerContentParamsChange,
 }: ContentPanelProps) => {
   if (!visible) return null;
+
+  const linkItems = items.filter((i) => i.type === "link");
+  const linkContentIds = linkItems.map((i) => i.id);
+  const linkContentTitles = Object.fromEntries(linkItems.map((i) => [i.id, i.title]));
 
   return (
     <div className="w-[360px] shrink-0 border-l bg-card overflow-y-auto">
@@ -169,6 +186,20 @@ const ContentPanel = ({
               : "Content is sent in the order shown below"}
           </p>
         </div>
+      )}
+
+      {/* UTM Parameters - shown when link content exists */}
+      {linkContentIds.length > 0 && (
+        <UTMSettings
+          linkContentIds={linkContentIds}
+          linkContentTitles={linkContentTitles}
+          mode={utmMode}
+          onModeChange={onUTMModeChange}
+          sharedParams={utmSharedParams}
+          onSharedParamsChange={onUTMSharedParamsChange}
+          perContentParams={utmPerContentParams}
+          onPerContentParamsChange={onUTMPerContentParamsChange}
+        />
       )}
 
       <div className="p-3 space-y-3">
