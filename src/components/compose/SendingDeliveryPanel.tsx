@@ -223,16 +223,49 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
           summary={resendSummary}
           isActive={resendActive}
           onEdit={() => setActiveModal("resend")}
-        />
-        <SummaryRow
-          icon={props.sendMode === "now" ? Zap : CalendarClock}
-          title="When to Send"
-          summary={whenSummary}
-          detail={whenDetail}
-          isActive={whenActive}
-          onEdit={() => setActiveModal("when")}
           isLast
         />
+      </div>
+
+      {/* When to Send — always visible inline */}
+      <div className="mt-4 overflow-hidden rounded-xl border bg-card">
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-2 mb-3">
+            <div className={cn(
+              "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+              whenActive ? "bg-primary/10" : "bg-secondary"
+            )}>
+              {props.sendMode === "now" ? (
+                <Zap className={cn("h-3.5 w-3.5", whenActive ? "text-primary" : "text-muted-foreground")} />
+              ) : (
+                <CalendarClock className={cn("h-3.5 w-3.5", whenActive ? "text-primary" : "text-muted-foreground")} />
+              )}
+            </div>
+            <span className="text-xs font-semibold text-foreground">When to Send</span>
+          </div>
+
+          <SendModeSettings
+            mode={props.sendMode}
+            onModeChange={props.onSendModeChange}
+            scheduleDate={props.scheduleDate}
+            onScheduleDateChange={props.onScheduleDateChange}
+            scheduleTime={props.scheduleTime}
+            onScheduleTimeChange={props.onScheduleTimeChange}
+            timezone={props.timezone}
+            onTimezoneChange={props.onTimezoneChange}
+          />
+
+          {props.sendMode === "schedule" && props.hasGroupRecipients && (
+            <div className="border-t mt-3 pt-3">
+              <RecipientFinalizationSettings
+                mode={props.finalizationMode}
+                onModeChange={props.onFinalizationModeChange}
+                removeDroppedMembers={props.removeDropped}
+                onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ─── Edit Modals ─── */}
