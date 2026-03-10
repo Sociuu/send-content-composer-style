@@ -278,7 +278,7 @@ const ParamRow = ({
         <MergeTagPopover onInsert={insertTag} />
         <button
           onClick={onRemove}
-          className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground/40 transition-colors hover:bg-destructive/10 hover:text-destructive opacity-0 group-hover:opacity-100"
+          className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
           title="Remove parameter"
         >
           <Trash2 className="h-2.5 w-2.5" />
