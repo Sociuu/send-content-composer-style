@@ -339,9 +339,9 @@ const TrackingForm = ({
 
       {/* Warning banner */}
       {warning && (
-        <div className="flex items-start gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2">
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500 mt-0.5" />
-          <p className="text-[10px] leading-snug text-amber-700 dark:text-amber-400">
+        <div className="flex items-start gap-2 rounded-lg border border-warning/20 bg-warning/5 px-3 py-2">
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning mt-0.5" />
+          <p className="text-[10px] leading-snug text-warning-foreground">
             {warning}
           </p>
         </div>
