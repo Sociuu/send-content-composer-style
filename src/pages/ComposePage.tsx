@@ -55,10 +55,9 @@ const ComposePage = () => {
   const [resendEnabled, setResendEnabled] = useState(false);
   const [resendDays, setResendDays] = useState(3);
 
-  // UTM state
-  const [utmMode, setUtmMode] = useState<UTMMode>("shared");
-  const [utmSharedParams, setUtmSharedParams] = useState<UTMParams>(EMPTY_UTM);
-  const [utmPerContentParams, setUtmPerContentParams] = useState<Record<string, UTMParams>>({});
+  // Link tracking state
+  const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>(EMPTY_TRACKING);
+  const [contentTrackingOverrides, setContentTrackingOverrides] = useState<Record<string, ContentTrackingOverride>>({});
 
   // Review & Send modal
   const [showReviewModal, setShowReviewModal] = useState(false);
