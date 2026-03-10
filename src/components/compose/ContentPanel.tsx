@@ -117,11 +117,6 @@ const SummaryRow = ({
           </span>
         )}
       </div>
-      {isActive && (
-        <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary">
-          <Check className="h-2.5 w-2.5 text-primary-foreground" />
-        </div>
-      )}
       <Pencil className="h-3 w-3 shrink-0 text-muted-foreground/50" />
     </button>
   </div>
