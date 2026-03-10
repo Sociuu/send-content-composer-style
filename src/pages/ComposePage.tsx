@@ -11,7 +11,13 @@ import SendingDeliveryPanel from "@/components/compose/SendingDeliveryPanel";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreviewActions from "@/components/compose/PreviewActions";
 import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
-import { Paperclip, ArrowRight } from "lucide-react";
+import { Paperclip, ArrowRight, AlertCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
 import type { ContentDistribution } from "@/components/compose/settings/ContentDistributionSettings";
@@ -24,6 +30,7 @@ import { EMPTY_TRACKING, DEFAULT_TRACKING } from "@/components/compose/settings/
 
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
+  const [recipients, setRecipients] = useState<string[]>(["Marketing Team"]);
   const [messageTitle, setMessageTitle] = useState(() => generateDefaultTitle());
   const [subject, setSubject] = useState("");
   const [preview, setPreview] = useState("");
@@ -86,7 +93,14 @@ const ComposePage = () => {
     setContentTrackingOverrides((prev) => ({ ...prev, [contentId]: override }));
   }, []);
 
-  const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
+  // Validation
+  const missingFields: string[] = [];
+  if (recipients.length === 0) missingFields.push("Recipients");
+  if (channel === "email" && !subject.trim()) missingFields.push("Subject");
+  if (!body.trim()) missingFields.push("Body");
+  if (sendMode === "schedule" && !scheduleDate) missingFields.push("Schedule date");
+
+  const canSend = missingFields.length === 0;
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -117,7 +131,7 @@ const ComposePage = () => {
               {/* Compose Card */}
               <div className="rounded-xl border bg-card compose-shadow">
                 <div className="px-5">
-                  <RecipientField />
+                  <RecipientField selected={recipients} onSelectedChange={setRecipients} />
                   {channel === "email" && (
                     <>
                       <ComposeField
@@ -206,13 +220,41 @@ const ComposePage = () => {
                 <button className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
                   Save Draft
                 </button>
-                <button
-                  onClick={() => setShowReviewModal(true)}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground transition-all hover:opacity-90"
-                >
-                  Review & Send
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="inline-flex">
+                        <button
+                          onClick={() => canSend && setShowReviewModal(true)}
+                          disabled={!canSend}
+                          className={cn(
+                            "flex items-center gap-2 rounded-lg px-5 py-2 text-xs font-semibold transition-all",
+                            canSend
+                              ? "bg-primary text-primary-foreground hover:opacity-90"
+                              : "bg-muted text-muted-foreground cursor-not-allowed"
+                          )}
+                        >
+                          {!canSend && <AlertCircle className="h-3.5 w-3.5" />}
+                          Review & Send
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </button>
+                      </span>
+                    </TooltipTrigger>
+                    {!canSend && (
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p className="text-[11px] font-medium mb-1">Required before sending:</p>
+                        <ul className="space-y-0.5">
+                          {missingFields.map((field) => (
+                            <li key={field} className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                              <span className="h-1 w-1 rounded-full bg-destructive shrink-0" />
+                              {field}
+                            </li>
+                          ))}
+                        </ul>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </div>
