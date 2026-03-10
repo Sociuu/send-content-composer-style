@@ -351,21 +351,22 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
       <EditModal
         open={activeModal === "when"}
         onClose={() => setActiveModal(null)}
-        title="When to Send"
+        title="Schedule Send"
       >
         <div className="space-y-4">
           <SendModeSettings
-            mode={props.sendMode}
-            onModeChange={props.onSendModeChange}
+            mode="schedule"
+            onModeChange={() => {}}
             scheduleDate={props.scheduleDate}
             onScheduleDateChange={props.onScheduleDateChange}
             scheduleTime={props.scheduleTime}
             onScheduleTimeChange={props.onScheduleTimeChange}
             timezone={props.timezone}
             onTimezoneChange={props.onTimezoneChange}
+            hideModePicker
           />
 
-          {props.sendMode === "schedule" && props.hasGroupRecipients && (
+          {props.hasGroupRecipients && (
             <div className="border-t pt-4">
               <RecipientFinalizationSettings
                 mode={props.finalizationMode}
