@@ -164,12 +164,10 @@ const ContentPanel = ({
   onContentDistributionChange,
   contentAccessMode,
   onContentAccessModeChange,
-  utmMode,
-  onUTMModeChange,
-  utmSharedParams,
-  onUTMSharedParamsChange,
-  utmPerContentParams,
-  onUTMPerContentParamsChange,
+  trackingConfig,
+  onTrackingConfigChange,
+  contentTrackingOverrides,
+  onContentTrackingOverrideChange,
 }: ContentPanelProps) => {
   const [activeModal, setActiveModal] = useState<ModalId>(null);
 
