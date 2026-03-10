@@ -11,13 +11,14 @@ type RecipientType = "user" | "group" | "all" | "channel";
 interface Recipient {
   name: string;
   type: RecipientType;
+  count?: number;
 }
 
 const emailRecipients: Recipient[] = [
-  { name: "All employees", type: "all" },
-  { name: "Marketing Team", type: "group" },
-  { name: "Engineering", type: "group" },
-  { name: "Sales", type: "group" },
+  { name: "All employees", type: "all", count: 847 },
+  { name: "Marketing Team", type: "group", count: 24 },
+  { name: "Engineering", type: "group", count: 56 },
+  { name: "Sales", type: "group", count: 31 },
   { name: "John Smith", type: "user" },
   { name: "Jane Doe", type: "user" },
   { name: "Alex Johnson", type: "user" },
@@ -26,12 +27,12 @@ const emailRecipients: Recipient[] = [
 ];
 
 const messagingRecipients: Recipient[] = [
-  { name: "General", type: "channel" },
-  { name: "Marketing", type: "channel" },
-  { name: "Engineering", type: "channel" },
-  { name: "Announcements", type: "channel" },
-  { name: "Sales", type: "channel" },
-  { name: "Random", type: "channel" },
+  { name: "General", type: "channel", count: 312 },
+  { name: "Marketing", type: "channel", count: 24 },
+  { name: "Engineering", type: "channel", count: 56 },
+  { name: "Announcements", type: "channel", count: 847 },
+  { name: "Sales", type: "channel", count: 31 },
+  { name: "Random", type: "channel", count: 198 },
 ];
 
 function getIcon(type: RecipientType) {
@@ -82,6 +83,11 @@ const RecipientChip = ({
     >
       <Icon className={`h-3 w-3 shrink-0 ${isAll ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
       {recipient.name}
+      {recipient.count != null && (
+        <span className={`text-[10px] font-normal ${isAll ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+          · ~{recipient.count}
+        </span>
+      )}
       <button
         onClick={onRemove}
         className="text-muted-foreground transition-colors hover:text-foreground"
@@ -123,7 +129,7 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
   const addRecipient = (name: string) => {
     onSelectedChange([...selected, name]);
     setInputValue("");
-    setShowSuggestions(false);
+    // Keep suggestions open so user can select more
   };
 
   const removeRecipient = (name: string) => {
@@ -217,13 +223,19 @@ const RecipientField = ({ selected, onSelectedChange, channel = "email" }: Recip
             return (
               <button
                 key={recipient.name}
-                onMouseDown={() => addRecipient(recipient.name)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  addRecipient(recipient.name);
+                }}
                 className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${
                   recipient.type === "all" ? "text-foreground font-medium" : "text-foreground"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="flex-1">{recipient.name}</span>
+                {recipient.count != null && (
+                  <span className="text-[10px] text-muted-foreground">~{recipient.count}</span>
+                )}
                 <span className="text-[10px] text-muted-foreground capitalize">
                   {typeLabel}
                 </span>
