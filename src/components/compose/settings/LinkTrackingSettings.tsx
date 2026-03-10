@@ -548,28 +548,6 @@ const LinkTrackingSettings = ({
         </div>
       )}
 
-      {/* Single content: allow exclude */}
-      {linkContentIds.length === 1 && (
-        <div className="mt-2">
-          {contentOverrides[linkContentIds[0]]?.mode === "exclude" ? (
-            <button
-              onClick={() => onContentOverrideChange(linkContentIds[0], { mode: "inherit" })}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/5"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Re-enable tracking for this link
-            </button>
-          ) : (
-            <button
-              onClick={() => onContentOverrideChange(linkContentIds[0], { mode: "exclude" })}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Ban className="h-3 w-3" />
-              Disable tracking for this link
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 };
