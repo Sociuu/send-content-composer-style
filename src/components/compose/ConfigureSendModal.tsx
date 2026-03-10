@@ -16,6 +16,8 @@ import SendConfirmationDialog from "./settings/SendConfirmationDialog";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
 
 interface ConfigureSendModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   contentCount: number;
   hasGroupRecipients: boolean;
   contentDistribution: ContentDistribution;
