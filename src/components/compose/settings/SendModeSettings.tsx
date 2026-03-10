@@ -49,29 +49,43 @@ const SendModeSettings = ({
         Send Mode
       </label>
 
-      <div className="flex gap-1 rounded-lg bg-secondary p-0.5">
-        <button
-          onClick={() => onModeChange("now")}
+      <div className="space-y-2">
+        <label
           className={cn(
-            "flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
-            mode === "now"
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
+            "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
+            mode === "now" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
           )}
         >
-          Send Now
-        </button>
-        <button
-          onClick={() => onModeChange("schedule")}
+          <input
+            type="radio"
+            name="sendMode"
+            checked={mode === "now"}
+            onChange={() => onModeChange("now")}
+            className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
+          />
+          <div>
+            <span className="block text-xs font-medium text-foreground">Send Now</span>
+            <span className="block text-[11px] text-muted-foreground">Deliver immediately</span>
+          </div>
+        </label>
+        <label
           className={cn(
-            "flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-all",
-            mode === "schedule"
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
+            "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
+            mode === "schedule" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
           )}
         >
-          Schedule
-        </button>
+          <input
+            type="radio"
+            name="sendMode"
+            checked={mode === "schedule"}
+            onChange={() => onModeChange("schedule")}
+            className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
+          />
+          <div>
+            <span className="block text-xs font-medium text-foreground">Schedule</span>
+            <span className="block text-[11px] text-muted-foreground">Pick a date & time</span>
+          </div>
+        </label>
       </div>
 
       {mode === "schedule" && (
