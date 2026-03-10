@@ -90,7 +90,7 @@ const ComposePage = () => {
 
   return (
     <div className="flex h-screen flex-col bg-background">
-      <ComposeHeader draftStatus="Draft saved 2 min ago" />
+      <ComposeHeader draftStatus="Draft saved 2 min ago" title={messageTitle} onTitleChange={setMessageTitle} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Main Compose Area */}
