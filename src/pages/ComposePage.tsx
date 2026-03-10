@@ -24,6 +24,7 @@ import { EMPTY_TRACKING, DEFAULT_TRACKING } from "@/components/compose/settings/
 
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
+  const [messageTitle, setMessageTitle] = useState(() => generateDefaultTitle());
   const [subject, setSubject] = useState("");
   const [preview, setPreview] = useState("");
   const [body, setBody] = useState("");
