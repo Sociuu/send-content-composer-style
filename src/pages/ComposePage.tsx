@@ -221,7 +221,12 @@ const ComposePage = () => {
               onScheduleTimeChange={setScheduleTime}
               timezone={timezone}
               onTimezoneChange={setTimezone}
-              hasGroupRecipients={true}
+              showFinalization={channel === "email" && recipients.some((r) => {
+                const allNames = ["All employees"];
+                const groupNames = ["Marketing Team", "Engineering", "Sales"];
+                return allNames.includes(r) || groupNames.includes(r);
+              })}
+              isAllEmployees={recipients.includes("All employees")}
               finalizationMode={finalizationMode}
               onFinalizationModeChange={setFinalizationMode}
               removeDropped={removeDropped}

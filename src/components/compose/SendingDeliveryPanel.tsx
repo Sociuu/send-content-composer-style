@@ -34,7 +34,8 @@ interface SendingDeliveryPanelProps {
   timezone: string;
   onTimezoneChange: (tz: string) => void;
 
-  hasGroupRecipients: boolean;
+  showFinalization: boolean;
+  isAllEmployees?: boolean;
   finalizationMode: FinalizationMode;
   onFinalizationModeChange: (m: FinalizationMode) => void;
   removeDropped: boolean;
@@ -190,10 +191,14 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
       ? `${format(props.scheduleDate, "MMM d, yyyy")} at ${props.scheduleTime} (${props.timezone.split("/")[1]?.replace("_", " ") || props.timezone})`
       : "Scheduled — pick a date";
   const whenDetail =
-    whenActive && props.hasGroupRecipients
+    whenActive && props.showFinalization
       ? props.finalizationMode === "at-send-time"
-        ? "Recipients finalized at send time"
-        : "Recipients locked at schedule time"
+        ? props.isAllEmployees
+          ? "Platform roster finalized at send time"
+          : "Recipients finalized at send time"
+        : props.isAllEmployees
+          ? "Platform roster locked at schedule time"
+          : "Recipients locked at schedule time"
       : undefined;
 
   return (
@@ -296,8 +301,10 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
                   </div>
                   <span className="block text-[10px] text-muted-foreground">
                     {props.timezone.split("/")[1]?.replace("_", " ") || props.timezone}
-                    {props.hasGroupRecipients && (
-                      <> · Recipients {props.finalizationMode === "at-send-time" ? "finalized at send time" : "locked at schedule time"}</>
+                    {props.showFinalization && (
+                      <> · {props.finalizationMode === "at-send-time"
+                        ? (props.isAllEmployees ? "Platform roster finalized at send time" : "Recipients finalized at send time")
+                        : (props.isAllEmployees ? "Platform roster locked at schedule time" : "Recipients locked at schedule time")}</>
                     )}
                   </span>
                 </div>
@@ -381,13 +388,14 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
             hideModePicker
           />
 
-          {props.hasGroupRecipients && (
+          {props.showFinalization && (
             <div className="border-t pt-4">
               <RecipientFinalizationSettings
                 mode={props.finalizationMode}
                 onModeChange={props.onFinalizationModeChange}
                 removeDroppedMembers={props.removeDropped}
                 onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
+                isAllEmployees={props.isAllEmployees}
               />
             </div>
           )}

@@ -7,6 +7,7 @@ interface RecipientFinalizationSettingsProps {
   onModeChange: (mode: FinalizationMode) => void;
   removeDroppedMembers: boolean;
   onRemoveDroppedMembersChange: (val: boolean) => void;
+  isAllEmployees?: boolean;
 }
 
 const RecipientFinalizationSettings = ({
@@ -14,6 +15,7 @@ const RecipientFinalizationSettings = ({
   onModeChange,
   removeDroppedMembers,
   onRemoveDroppedMembersChange,
+  isAllEmployees,
 }: RecipientFinalizationSettingsProps) => {
   return (
     <div className="space-y-3">
@@ -33,7 +35,9 @@ const RecipientFinalizationSettings = ({
           <div>
             <span className="text-xs font-medium text-foreground">Finalize at send time</span>
             <p className="mt-0.5 text-[11px] text-muted-foreground">
-              Recipients are resolved when the message is actually sent. Group changes up until that point are reflected.
+              {isAllEmployees
+                ? "Recipients are resolved when the message is actually sent. Any employees added or removed from the platform before then are reflected."
+                : "Recipients are resolved when the message is actually sent. Group changes up until that point are reflected."}
             </p>
           </div>
         </label>
@@ -49,13 +53,15 @@ const RecipientFinalizationSettings = ({
           <div>
             <span className="text-xs font-medium text-foreground">Lock at schedule time</span>
             <p className="mt-0.5 text-[11px] text-muted-foreground">
-              Recipients are frozen when you schedule. New members added to groups later won't receive the message.
+              {isAllEmployees
+                ? "Recipients are frozen when you schedule. New employees added to the platform later won't receive the message."
+                : "Recipients are frozen when you schedule. New members added to groups later won't receive the message."}
             </p>
           </div>
         </label>
       </div>
 
-      {mode === "at-schedule-time" && (
+      {mode === "at-schedule-time" && !isAllEmployees && (
         <div className="flex items-center justify-between rounded-lg border bg-secondary/50 p-2.5">
           <div>
             <span className="text-xs font-medium text-foreground">Remove dropped members</span>
