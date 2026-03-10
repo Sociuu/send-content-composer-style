@@ -272,8 +272,8 @@ const MergeTagEditor = ({
           maxHeight: maxHeight || undefined,
           overflowY: maxHeight ? "auto" : undefined,
           minHeight: multiline ? "3.5rem" : undefined,
-          whiteSpace: multiline ? "pre-wrap" : "nowrap",
-          overflowX: multiline ? undefined : "hidden",
+          whiteSpace: multiline ? "pre-wrap" : "normal",
+          wordBreak: multiline ? undefined : "break-word",
         }}
       />
     </div>
