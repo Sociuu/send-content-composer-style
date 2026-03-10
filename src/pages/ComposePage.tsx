@@ -287,6 +287,15 @@ const ComposePage = () => {
         footer={footer}
         contentItems={contentItems}
       />
+
+      {/* Review & Send Modal */}
+      <ConfigureSendModal
+        open={showReviewModal}
+        onOpenChange={setShowReviewModal}
+        contentCount={contentItems.length}
+        hasGroupRecipients={recipients.length > 0}
+        contentDistribution={contentDistribution}
+      />
     </div>
   );
 };
