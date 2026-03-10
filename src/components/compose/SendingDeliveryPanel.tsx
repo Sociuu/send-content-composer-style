@@ -253,41 +253,56 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
               </div>
               <Zap className={cn("h-3.5 w-3.5", props.sendMode === "now" ? "text-primary" : "text-muted-foreground/40")} />
             </label>
-            <label
-              className={cn(
-                "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
-                props.sendMode === "schedule" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
-              )}
-              onClick={(e) => {
-                if (props.sendMode !== "schedule") {
-                  props.onSendModeChange("schedule");
-                }
-                // Open modal to configure schedule details
-                setTimeout(() => setActiveModal("when"), 50);
-              }}
-            >
-              <input
-                type="radio"
-                name="whenToSend"
-                checked={props.sendMode === "schedule"}
-                readOnly
-                className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
-              />
-              <div className="flex-1">
-                <span className="block text-xs font-medium text-foreground">Schedule</span>
-                <span className="block text-[11px] text-muted-foreground">
-                  {props.sendMode === "schedule" && props.scheduleDate
-                    ? `${format(props.scheduleDate, "MMM d, yyyy")} at ${props.scheduleTime}`
-                    : "Pick a date & time to send later"}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {props.sendMode === "schedule" && (
-                  <Pencil className="h-3 w-3 text-muted-foreground/50" />
+            <div>
+              <label
+                className={cn(
+                  "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
+                  props.sendMode === "schedule" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
                 )}
-                <CalendarClock className={cn("h-3.5 w-3.5", props.sendMode === "schedule" ? "text-primary" : "text-muted-foreground/40")} />
-              </div>
-            </label>
+                onClick={(e) => {
+                  if (props.sendMode !== "schedule") {
+                    props.onSendModeChange("schedule");
+                  }
+                  setTimeout(() => setActiveModal("when"), 50);
+                }}
+              >
+                <input
+                  type="radio"
+                  name="whenToSend"
+                  checked={props.sendMode === "schedule"}
+                  readOnly
+                  className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
+                />
+                <div className="flex-1">
+                  <span className="block text-xs font-medium text-foreground">Schedule</span>
+                  <span className="block text-[11px] text-muted-foreground">Pick a date & time to send later</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {props.sendMode === "schedule" && (
+                    <Pencil className="h-3 w-3 text-muted-foreground/50" />
+                  )}
+                  <CalendarClock className={cn("h-3.5 w-3.5", props.sendMode === "schedule" ? "text-primary" : "text-muted-foreground/40")} />
+                </div>
+              </label>
+              {props.sendMode === "schedule" && (
+                <div className="mt-1.5 ml-6 rounded-lg bg-secondary/60 px-3 py-2 space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-[11px] text-foreground">
+                      {props.scheduleDate
+                        ? `${format(props.scheduleDate, "MMM d, yyyy")} at ${props.scheduleTime}`
+                        : "No date selected yet"}
+                    </span>
+                  </div>
+                  <span className="block text-[10px] text-muted-foreground">
+                    {props.timezone.split("/")[1]?.replace("_", " ") || props.timezone}
+                    {props.hasGroupRecipients && (
+                      <> · Recipients {props.finalizationMode === "at-send-time" ? "finalized at send time" : "locked at schedule time"}</>
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
