@@ -70,25 +70,7 @@ const ConfigureSendModal = ({ open, onOpenChange, contentCount, hasGroupRecipien
 
   return (
     <>
-      <div className="border-t bg-card">
-        <div className="flex items-center justify-between px-6 py-3">
-          <div />
-          <div className="flex items-center gap-2">
-            <button className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
-              Save Draft
-            </button>
-            <button
-              onClick={() => setOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground transition-all hover:opacity-90"
-            >
-              Review & Send
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg p-0">
           <DialogHeader className="sticky top-0 z-10 border-b bg-card px-6 py-4">
             <DialogTitle className="text-sm font-semibold">Review & Send</DialogTitle>
