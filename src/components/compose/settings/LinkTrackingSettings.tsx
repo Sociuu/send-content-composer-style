@@ -60,6 +60,31 @@ const UTM_LABELS: Record<string, string> = {
   utm_content: "Content",
 };
 
+/* ─── Key/Value validation helpers ─── */
+
+const MAX_KEY_LENGTH = 128;
+const MAX_VALUE_LENGTH = 512;
+
+function sanitizeKey(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_\-.]/g, "")
+    .slice(0, MAX_KEY_LENGTH);
+}
+
+function sanitizeValue(raw: string): string {
+  const parts = raw.split(/({{[^}]+}})/g);
+  return parts
+    .map((part) =>
+      part.startsWith("{{") && part.endsWith("}}")
+        ? part
+        : part.replace(/ /g, "%20")
+    )
+    .join("")
+    .slice(0, MAX_VALUE_LENGTH);
+}
+
 function getUtmWarning(params: TrackingParam[]): string | null {
   const utmKeys = params.map((p) => p.key).filter((k) => k.startsWith("utm_"));
   if (utmKeys.length === 0) return null;
@@ -251,8 +276,9 @@ const ParamRow = ({
           <input
             type="text"
             value={param.key}
-            onChange={(e) => onChange({ ...param, key: e.target.value })}
-            placeholder="parameter name"
+            onChange={(e) => onChange({ ...param, key: sanitizeKey(e.target.value) })}
+            placeholder="parameter-name"
+            maxLength={MAX_KEY_LENGTH}
             className="h-6 flex-1 rounded border-none bg-transparent px-0 text-[11px] font-medium text-foreground outline-none placeholder:text-muted-foreground/40"
           />
         )}
@@ -269,8 +295,9 @@ const ParamRow = ({
         ref={valRef}
         type="text"
         value={param.value}
-        onChange={(e) => onChange({ ...param, value: e.target.value })}
+        onChange={(e) => onChange({ ...param, value: sanitizeValue(e.target.value) })}
         placeholder={isUtmKey ? `e.g. ${param.key === "utm_source" ? "employee_advocacy" : param.key === "utm_medium" ? "{{network_name}}" : param.key === "utm_campaign" ? "q1_brand_2026" : param.key === "utm_term" ? "{{recipient_id}}" : "{{content_id}}"}` : "value"}
+        maxLength={MAX_VALUE_LENGTH}
         className="h-7 w-full rounded-md border bg-secondary/40 px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/40"
       />
     </div>
@@ -546,28 +573,6 @@ const LinkTrackingSettings = ({
         </div>
       )}
 
-      {/* Single content: allow exclude */}
-      {linkContentIds.length === 1 && (
-        <div className="mt-2">
-          {contentOverrides[linkContentIds[0]]?.mode === "exclude" ? (
-            <button
-              onClick={() => onContentOverrideChange(linkContentIds[0], { mode: "inherit" })}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/5"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Re-enable tracking for this link
-            </button>
-          ) : (
-            <button
-              onClick={() => onContentOverrideChange(linkContentIds[0], { mode: "exclude" })}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Ban className="h-3 w-3" />
-              Disable tracking for this link
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 };
