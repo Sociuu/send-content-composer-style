@@ -1,4 +1,6 @@
-import { Timer, RotateCcw, Zap, CalendarClock, Clock } from "lucide-react";
+import { useState } from "react";
+import { Timer, RotateCcw, Zap, CalendarClock, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import PulsingSettings, { type PulsingMode, type TimeUnit } from "./settings/PulsingSettings";
 import DeliveryWindowSettings from "./settings/DeliveryWindowSettings";
 import ResendSettings from "./settings/ResendSettings";
@@ -51,22 +53,75 @@ interface SendingDeliveryPanelProps {
   onResendDaysChange: (n: number) => void;
 }
 
-const SectionHeader = ({
+type SectionId = "pulsing" | "resend" | "when";
+
+const CollapsibleSection = ({
   icon: Icon,
   title,
+  badge,
+  isOpen,
+  onToggle,
+  children,
 }: {
   icon: typeof Timer;
   title: string;
+  badge?: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
 }) => (
-  <div className="flex items-center gap-2">
-    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
-      <Icon className="h-3.5 w-3.5 text-primary" />
-    </div>
-    <span className="text-xs font-semibold text-foreground">{title}</span>
+  <div>
+    <button
+      onClick={onToggle}
+      className="flex w-full items-center gap-2 py-1 text-left transition-colors hover:opacity-80"
+    >
+      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-3.5 w-3.5 text-primary" />
+      </div>
+      <span className="flex-1 text-xs font-semibold text-foreground">{title}</span>
+      {badge && !isOpen && (
+        <span className="rounded-md bg-secondary px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+          {badge}
+        </span>
+      )}
+      <ChevronDown
+        className={cn(
+          "h-3.5 w-3.5 text-muted-foreground transition-transform",
+          isOpen && "rotate-180"
+        )}
+      />
+    </button>
+    {isOpen && <div className="mt-3">{children}</div>}
   </div>
 );
 
 const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
+  const [openSections, setOpenSections] = useState<Set<SectionId>>(
+    new Set(["pulsing", "when"])
+  );
+
+  const toggle = (id: SectionId) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Build summary badges for collapsed sections
+  const pulsingBadge = props.pulsingEnabled
+    ? props.pulsingMode === "rate"
+      ? `${props.rateCount}/${props.rateUnit}`
+      : `Over ${props.distributeDuration} ${props.distributeUnit}`
+    : "Off";
+
+  const resendBadge = props.resendEnabled
+    ? `After ${props.resendDays}d`
+    : "Off";
+
+  const whenBadge = props.sendMode === "now" ? "Immediately" : "Scheduled";
+
   return (
     <div className="mx-auto w-full max-w-2xl px-6 pb-6">
       {/* Section divider */}
@@ -78,94 +133,100 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <div className="rounded-xl border bg-card p-4 space-y-5">
+      <div className="rounded-xl border bg-card p-4 space-y-4">
         {/* 1. Pulsing + Delivery Window */}
-        <div>
-          <SectionHeader icon={Timer} title="Pulsing" />
-          <div className="mt-3">
-            <PulsingSettings
-              enabled={props.pulsingEnabled}
-              onEnabledChange={props.onPulsingEnabledChange}
-              mode={props.pulsingMode}
-              onModeChange={props.onPulsingModeChange}
-              rateCount={props.rateCount}
-              onRateCountChange={props.onRateCountChange}
-              rateUnit={props.rateUnit}
-              onRateUnitChange={props.onRateUnitChange}
-              distributeDuration={props.distributeDuration}
-              onDistributeDurationChange={props.onDistributeDurationChange}
-              distributeUnit={props.distributeUnit}
-              onDistributeUnitChange={props.onDistributeUnitChange}
-              estimatedFirst="Mar 10, 2026 at 09:00"
-              estimatedLast="Mar 10, 2026 at 13:00"
-            />
+        <CollapsibleSection
+          icon={Timer}
+          title="Pulsing"
+          badge={pulsingBadge}
+          isOpen={openSections.has("pulsing")}
+          onToggle={() => toggle("pulsing")}
+        >
+          <PulsingSettings
+            enabled={props.pulsingEnabled}
+            onEnabledChange={props.onPulsingEnabledChange}
+            mode={props.pulsingMode}
+            onModeChange={props.onPulsingModeChange}
+            rateCount={props.rateCount}
+            onRateCountChange={props.onRateCountChange}
+            rateUnit={props.rateUnit}
+            onRateUnitChange={props.onRateUnitChange}
+            distributeDuration={props.distributeDuration}
+            onDistributeDurationChange={props.onDistributeDurationChange}
+            distributeUnit={props.distributeUnit}
+            onDistributeUnitChange={props.onDistributeUnitChange}
+            estimatedFirst="Mar 10, 2026 at 09:00"
+            estimatedLast="Mar 10, 2026 at 13:00"
+          />
 
-            {props.pulsingEnabled && (
-              <div className="mt-3 border-t pt-3">
-                <DeliveryWindowSettings
-                  enabled={props.deliveryWindowEnabled}
-                  onEnabledChange={props.onDeliveryWindowEnabledChange}
-                  allowedDays={props.allowedDays}
-                  onAllowedDaysChange={props.onAllowedDaysChange}
-                  startTime={props.windowStartTime}
-                  onStartTimeChange={props.onWindowStartTimeChange}
-                  endTime={props.windowEndTime}
-                  onEndTimeChange={props.onWindowEndTimeChange}
-                  timezone={props.windowTimezone}
-                  onTimezoneChange={props.onWindowTimezoneChange}
-                />
-              </div>
-            )}
-          </div>
-        </div>
+          {props.pulsingEnabled && (
+            <div className="mt-3 border-t pt-3">
+              <DeliveryWindowSettings
+                enabled={props.deliveryWindowEnabled}
+                onEnabledChange={props.onDeliveryWindowEnabledChange}
+                allowedDays={props.allowedDays}
+                onAllowedDaysChange={props.onAllowedDaysChange}
+                startTime={props.windowStartTime}
+                onStartTimeChange={props.onWindowStartTimeChange}
+                endTime={props.windowEndTime}
+                onEndTimeChange={props.onWindowEndTimeChange}
+                timezone={props.windowTimezone}
+                onTimezoneChange={props.onWindowTimezoneChange}
+              />
+            </div>
+          )}
+        </CollapsibleSection>
 
         <div className="h-px bg-border" />
 
         {/* 2. Resend */}
-        <div>
-          <SectionHeader icon={RotateCcw} title="Resend" />
-          <div className="mt-3">
-            <ResendSettings
-              enabled={props.resendEnabled}
-              onEnabledChange={props.onResendEnabledChange}
-              daysAfter={props.resendDays}
-              onDaysAfterChange={props.onResendDaysChange}
-            />
-          </div>
-        </div>
+        <CollapsibleSection
+          icon={RotateCcw}
+          title="Resend"
+          badge={resendBadge}
+          isOpen={openSections.has("resend")}
+          onToggle={() => toggle("resend")}
+        >
+          <ResendSettings
+            enabled={props.resendEnabled}
+            onEnabledChange={props.onResendEnabledChange}
+            daysAfter={props.resendDays}
+            onDaysAfterChange={props.onResendDaysChange}
+          />
+        </CollapsibleSection>
 
         <div className="h-px bg-border" />
 
         {/* 3. When to Send */}
-        <div>
-          <SectionHeader
-            icon={props.sendMode === "now" ? Zap : CalendarClock}
-            title="When to Send"
+        <CollapsibleSection
+          icon={props.sendMode === "now" ? Zap : CalendarClock}
+          title="When to Send"
+          badge={whenBadge}
+          isOpen={openSections.has("when")}
+          onToggle={() => toggle("when")}
+        >
+          <SendModeSettings
+            mode={props.sendMode}
+            onModeChange={props.onSendModeChange}
+            scheduleDate={props.scheduleDate}
+            onScheduleDateChange={props.onScheduleDateChange}
+            scheduleTime={props.scheduleTime}
+            onScheduleTimeChange={props.onScheduleTimeChange}
+            timezone={props.timezone}
+            onTimezoneChange={props.onTimezoneChange}
           />
-          <div className="mt-3">
-            <SendModeSettings
-              mode={props.sendMode}
-              onModeChange={props.onSendModeChange}
-              scheduleDate={props.scheduleDate}
-              onScheduleDateChange={props.onScheduleDateChange}
-              scheduleTime={props.scheduleTime}
-              onScheduleTimeChange={props.onScheduleTimeChange}
-              timezone={props.timezone}
-              onTimezoneChange={props.onTimezoneChange}
-            />
 
-            {props.sendMode === "schedule" && props.hasGroupRecipients && (
-              <div className="mt-3 border-t pt-3">
-                <RecipientFinalizationSettings
-                  mode={props.finalizationMode}
-                  onModeChange={props.onFinalizationModeChange}
-                  removeDroppedMembers={props.removeDropped}
-                  onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
-                />
-              </div>
-            )}
-          </div>
-        </div>
+          {props.sendMode === "schedule" && props.hasGroupRecipients && (
+            <div className="mt-3 border-t pt-3">
+              <RecipientFinalizationSettings
+                mode={props.finalizationMode}
+                onModeChange={props.onFinalizationModeChange}
+                removeDroppedMembers={props.removeDropped}
+                onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
+              />
+            </div>
+          )}
+        </CollapsibleSection>
       </div>
     </div>
   );
