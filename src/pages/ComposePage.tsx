@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import ComposeHeader from "@/components/compose/ComposeHeader";
+import ComposeHeader, { generateDefaultTitle } from "@/components/compose/ComposeHeader";
 import ChannelSelector from "@/components/compose/ChannelSelector";
 import RecipientField from "@/components/compose/RecipientField";
 import ComposeField from "@/components/compose/ComposeField";
