@@ -199,36 +199,34 @@ const CustomParamRow = ({
   };
 
   return (
-    <div className="flex items-start gap-1.5">
-      <div className="flex-1">
+    <div className="space-y-1">
+      <div className="flex items-center justify-end">
+        <MergeTagPopover onInsert={insertTagToValue} />
+      </div>
+      <div className="flex items-center gap-1.5">
         <input
           ref={keyRef}
           type="text"
           value={param.key}
           onChange={(e) => onChange({ ...param, key: e.target.value })}
           placeholder="key"
-          className="h-7 w-full rounded-md border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
+          className="h-7 flex-1 rounded-md border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
         />
-      </div>
-      <div className="flex-1">
-        <div className="flex items-center gap-0.5 mb-0.5 justify-end">
-          <MergeTagPopover onInsert={insertTagToValue} />
-        </div>
         <input
           ref={valRef}
           type="text"
           value={param.value}
           onChange={(e) => onChange({ ...param, value: e.target.value })}
           placeholder="value"
-          className="h-7 w-full rounded-md border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
+          className="h-7 flex-1 rounded-md border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
         />
+        <button
+          onClick={onRemove}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 className="h-3 w-3" />
+        </button>
       </div>
-      <button
-        onClick={onRemove}
-        className="mt-[22px] flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-      >
-        <Trash2 className="h-3 w-3" />
-      </button>
     </div>
   );
 };
