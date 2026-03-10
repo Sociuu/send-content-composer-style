@@ -16,12 +16,7 @@ interface ComposeHeaderProps {
   onTitleChange: (title: string) => void;
 }
 
-const ComposeHeader = ({
-  draftStatus = "Draft",
-  onBack,
-  title,
-  onTitleChange,
-}: ComposeHeaderProps) => {
+const ComposeHeader = ({ draftStatus = "Draft", onBack, title, onTitleChange }: ComposeHeaderProps) => {
   const [editing, setEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -69,9 +64,7 @@ const ComposeHeader = ({
               onClick={() => setEditing(true)}
               className="group flex items-center gap-1.5 rounded px-1 py-0.5 -mx-1 transition-colors hover:bg-secondary"
             >
-              <h1 className="text-sm font-semibold text-foreground truncate max-w-[300px]">
-                {title}
-              </h1>
+              <h1 className="text-sm font-semibold text-foreground truncate max-w-[300px]">{title}</h1>
               <Pencil className="h-3 w-3 shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground" />
             </button>
           )}
@@ -94,14 +87,6 @@ const ComposeHeader = ({
             <DropdownMenuItem className="gap-2 text-xs">
               <Copy className="h-3.5 w-3.5" />
               Duplicate message
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-xs">
-              <FileText className="h-3.5 w-3.5" />
-              Save as template
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-xs">
-              <Pin className="h-3.5 w-3.5" />
-              Pin to dashboard
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 text-xs">
