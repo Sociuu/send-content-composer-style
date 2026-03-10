@@ -122,7 +122,7 @@ const ComposePage = () => {
             <div className="mx-auto w-full max-w-2xl px-6 py-5">
               {/* Channel Selector */}
               <div className="mb-5 flex items-center justify-between">
-                <ChannelSelector selected={channel} onChange={setChannel} />
+                <ChannelSelector selected={channel} onChange={handleChannelChange} />
                 <button
                   onClick={() => setShowContentPanel(!showContentPanel)}
                   className={cn(
