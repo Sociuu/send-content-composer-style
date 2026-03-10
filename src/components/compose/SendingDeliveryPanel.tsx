@@ -51,70 +51,38 @@ interface SendingDeliveryPanelProps {
   onResendDaysChange: (n: number) => void;
 }
 
-const SectionCard = ({
+const SectionHeader = ({
   icon: Icon,
   title,
-  children,
 }: {
   icon: typeof Timer;
   title: string;
-  children: React.ReactNode;
 }) => (
-  <div className="rounded-xl border bg-card p-4">
-    <div className="mb-3 flex items-center gap-2">
-      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
-        <Icon className="h-3.5 w-3.5 text-primary" />
-      </div>
-      <span className="text-xs font-semibold text-foreground">{title}</span>
+  <div className="flex items-center gap-2">
+    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+      <Icon className="h-3.5 w-3.5 text-primary" />
     </div>
-    {children}
+    <span className="text-xs font-semibold text-foreground">{title}</span>
   </div>
 );
 
 const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
   return (
     <div className="mx-auto w-full max-w-2xl px-6 pb-6">
-      <div className="relative">
-        {/* Section divider */}
-        <div className="mb-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-            Sending & Delivery
-          </span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
+      {/* Section divider */}
+      <div className="mb-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Sending & Delivery
+        </span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
 
-        <div className="space-y-3">
-          {/* When to Send */}
-          <SectionCard
-            icon={props.sendMode === "now" ? Zap : CalendarClock}
-            title="When to Send"
-          >
-            <SendModeSettings
-              mode={props.sendMode}
-              onModeChange={props.onSendModeChange}
-              scheduleDate={props.scheduleDate}
-              onScheduleDateChange={props.onScheduleDateChange}
-              scheduleTime={props.scheduleTime}
-              onScheduleTimeChange={props.onScheduleTimeChange}
-              timezone={props.timezone}
-              onTimezoneChange={props.onTimezoneChange}
-            />
-
-            {props.sendMode === "schedule" && props.hasGroupRecipients && (
-              <div className="mt-3 border-t pt-3">
-                <RecipientFinalizationSettings
-                  mode={props.finalizationMode}
-                  onModeChange={props.onFinalizationModeChange}
-                  removeDroppedMembers={props.removeDropped}
-                  onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
-                />
-              </div>
-            )}
-          </SectionCard>
-
-          {/* Pulsing + Delivery Window */}
-          <SectionCard icon={Timer} title="Pulsing">
+      <div className="rounded-xl border bg-card p-4 space-y-5">
+        {/* 1. Pulsing + Delivery Window */}
+        <div>
+          <SectionHeader icon={Timer} title="Pulsing" />
+          <div className="mt-3">
             <PulsingSettings
               enabled={props.pulsingEnabled}
               onEnabledChange={props.onPulsingEnabledChange}
@@ -148,17 +116,55 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
                 />
               </div>
             )}
-          </SectionCard>
+          </div>
+        </div>
 
-          {/* Resend */}
-          <SectionCard icon={RotateCcw} title="Resend">
+        <div className="h-px bg-border" />
+
+        {/* 2. Resend */}
+        <div>
+          <SectionHeader icon={RotateCcw} title="Resend" />
+          <div className="mt-3">
             <ResendSettings
               enabled={props.resendEnabled}
               onEnabledChange={props.onResendEnabledChange}
               daysAfter={props.resendDays}
               onDaysAfterChange={props.onResendDaysChange}
             />
-          </SectionCard>
+          </div>
+        </div>
+
+        <div className="h-px bg-border" />
+
+        {/* 3. When to Send */}
+        <div>
+          <SectionHeader
+            icon={props.sendMode === "now" ? Zap : CalendarClock}
+            title="When to Send"
+          />
+          <div className="mt-3">
+            <SendModeSettings
+              mode={props.sendMode}
+              onModeChange={props.onSendModeChange}
+              scheduleDate={props.scheduleDate}
+              onScheduleDateChange={props.onScheduleDateChange}
+              scheduleTime={props.scheduleTime}
+              onScheduleTimeChange={props.onScheduleTimeChange}
+              timezone={props.timezone}
+              onTimezoneChange={props.onTimezoneChange}
+            />
+
+            {props.sendMode === "schedule" && props.hasGroupRecipients && (
+              <div className="mt-3 border-t pt-3">
+                <RecipientFinalizationSettings
+                  mode={props.finalizationMode}
+                  onModeChange={props.onFinalizationModeChange}
+                  removeDroppedMembers={props.removeDropped}
+                  onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
