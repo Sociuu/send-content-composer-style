@@ -73,16 +73,9 @@ function sanitizeKey(raw: string): string {
     .slice(0, MAX_KEY_LENGTH);
 }
 
-function sanitizeValue(raw: string): string {
-  const parts = raw.split(/({{[^}]+}})/g);
-  return parts
-    .map((part) =>
-      part.startsWith("{{") && part.endsWith("}}")
-        ? part
-        : part.replace(/ /g, "%20")
-    )
-    .join("")
-    .slice(0, MAX_VALUE_LENGTH);
+/** Clean params: discard any without a key */
+export function cleanTrackingParams(config: TrackingConfig): TrackingConfig {
+  return { params: config.params.filter((p) => p.key.trim() !== "") };
 }
 
 function getUtmWarning(params: TrackingParam[]): string | null {
@@ -295,7 +288,7 @@ const ParamRow = ({
         ref={valRef}
         type="text"
         value={param.value}
-        onChange={(e) => onChange({ ...param, value: sanitizeValue(e.target.value) })}
+        onChange={(e) => onChange({ ...param, value: e.target.value })}
         placeholder={isUtmKey ? `e.g. ${param.key === "utm_source" ? "employee_advocacy" : param.key === "utm_medium" ? "{{network_name}}" : param.key === "utm_campaign" ? "q1_brand_2026" : param.key === "utm_term" ? "{{recipient_id}}" : "{{content_id}}"}` : "value"}
         maxLength={MAX_VALUE_LENGTH}
         className="h-7 w-full rounded-md border bg-secondary/40 px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/40"

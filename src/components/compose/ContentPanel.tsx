@@ -26,6 +26,7 @@ import LinkTrackingSettings, {
   type TrackingConfig,
   type ContentTrackingOverride,
   EMPTY_TRACKING,
+  cleanTrackingParams,
 } from "./settings/LinkTrackingSettings";
 
 export type ContentAccessMode = "available" | "grant-all";
@@ -170,6 +171,14 @@ const ContentPanel = ({
   onContentTrackingOverrideChange,
 }: ContentPanelProps) => {
   const [activeModal, setActiveModal] = useState<ModalId>(null);
+
+  const closeModal = (modal: ModalId) => {
+    if (modal === "utm") {
+      // Discard params with empty keys on save
+      onTrackingConfigChange(cleanTrackingParams(trackingConfig));
+    }
+    setActiveModal(null);
+  };
 
   if (!visible) return null;
 
@@ -406,7 +415,7 @@ const ContentPanel = ({
 
       <EditModal
         open={activeModal === "utm"}
-        onClose={() => setActiveModal(null)}
+        onClose={() => closeModal("utm")}
         title="Link Tracking"
       >
         <LinkTrackingSettings
