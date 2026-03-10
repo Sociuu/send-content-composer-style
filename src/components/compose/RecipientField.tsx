@@ -14,8 +14,8 @@ interface Recipient {
 }
 
 const mockRecipients: Recipient[] = [
+  { name: "All employees", type: "all" },
   { name: "Marketing Team", type: "group" },
-  { name: "All Employees", type: "group" },
   { name: "Engineering", type: "group" },
   { name: "Sales", type: "group" },
   { name: "John Smith", type: "user" },
