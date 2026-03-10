@@ -14,10 +14,10 @@ interface Recipient {
 }
 
 const emailRecipients: Recipient[] = [
-  { name: "All employees", type: "all" },
-  { name: "Marketing Team", type: "group" },
-  { name: "Engineering", type: "group" },
-  { name: "Sales", type: "group" },
+  { name: "All employees", type: "all", count: 847 },
+  { name: "Marketing Team", type: "group", count: 24 },
+  { name: "Engineering", type: "group", count: 56 },
+  { name: "Sales", type: "group", count: 31 },
   { name: "John Smith", type: "user" },
   { name: "Jane Doe", type: "user" },
   { name: "Alex Johnson", type: "user" },
@@ -26,12 +26,12 @@ const emailRecipients: Recipient[] = [
 ];
 
 const messagingRecipients: Recipient[] = [
-  { name: "General", type: "channel" },
-  { name: "Marketing", type: "channel" },
-  { name: "Engineering", type: "channel" },
-  { name: "Announcements", type: "channel" },
-  { name: "Sales", type: "channel" },
-  { name: "Random", type: "channel" },
+  { name: "General", type: "channel", count: 312 },
+  { name: "Marketing", type: "channel", count: 24 },
+  { name: "Engineering", type: "channel", count: 56 },
+  { name: "Announcements", type: "channel", count: 847 },
+  { name: "Sales", type: "channel", count: 31 },
+  { name: "Random", type: "channel", count: 198 },
 ];
 
 function getIcon(type: RecipientType) {
