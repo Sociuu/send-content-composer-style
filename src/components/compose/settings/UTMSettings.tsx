@@ -242,6 +242,11 @@ const UTMSettings = ({
           })}
         </div>
       )}
+  if (embedded) return <div>{content}</div>;
+
+  return (
+    <div className="border-b px-4 py-3">
+      {content}
     </div>
   );
 };
