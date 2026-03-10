@@ -44,7 +44,11 @@ const RecipientChip = ({
 
   return (
     <span
-      className="flex items-center gap-1.5 rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground"
+      className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-secondary-foreground ${
+        isGroup
+          ? "bg-primary/10 border border-primary/15"
+          : "bg-secondary"
+      }`}
     >
       <Icon className="h-3 w-3 shrink-0 text-muted-foreground" />
       {recipient.name}
