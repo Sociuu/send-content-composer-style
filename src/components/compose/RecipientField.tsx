@@ -53,7 +53,7 @@ const RecipientChip = ({
             : "bg-secondary text-secondary-foreground"
       }`}
     >
-      <Icon className="h-3 w-3 shrink-0 text-muted-foreground" />
+      <Icon className={`h-3 w-3 shrink-0 ${isAll ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
       {recipient.name}
       <button
         onClick={onRemove}
