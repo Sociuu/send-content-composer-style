@@ -11,7 +11,7 @@ import SendingDeliveryPanel from "@/components/compose/SendingDeliveryPanel";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreviewActions from "@/components/compose/PreviewActions";
 import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
-import { Paperclip, ArrowRight, AlertCircle } from "lucide-react";
+import { Paperclip, ArrowRight, AlertCircle, PanelRightOpen, PanelRightClose } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +31,15 @@ import { EMPTY_TRACKING, DEFAULT_TRACKING } from "@/components/compose/settings/
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
   const [recipients, setRecipients] = useState<string[]>(["Marketing Team"]);
+
+  const handleChannelChange = (newChannel: "email" | "slack" | "teams") => {
+    const wasMessaging = channel === "slack" || channel === "teams";
+    const isMessaging = newChannel === "slack" || newChannel === "teams";
+    if (wasMessaging !== isMessaging) {
+      setRecipients([]);
+    }
+    setChannel(newChannel);
+  };
   const [messageTitle, setMessageTitle] = useState(() => generateDefaultTitle());
   const [subject, setSubject] = useState("");
   const [preview, setPreview] = useState("");
@@ -113,15 +122,29 @@ const ComposePage = () => {
             <div className="mx-auto w-full max-w-2xl px-6 py-5">
               {/* Channel Selector */}
               <div className="mb-5 flex items-center justify-between">
-                <ChannelSelector selected={channel} onChange={setChannel} />
+                <ChannelSelector selected={channel} onChange={handleChannelChange} />
                 <button
                   onClick={() => setShowContentPanel(!showContentPanel)}
-                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                    showContentPanel
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  )}
                 >
-                  <Paperclip className="h-3.5 w-3.5" />
+                  {showContentPanel ? (
+                    <PanelRightClose className="h-3.5 w-3.5" />
+                  ) : (
+                    <PanelRightOpen className="h-3.5 w-3.5" />
+                  )}
                   Content
                   {contentItems.length > 0 && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                    <span className={cn(
+                      "flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold",
+                      showContentPanel
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted-foreground/20 text-muted-foreground"
+                    )}>
                       {contentItems.length}
                     </span>
                   )}
@@ -131,7 +154,7 @@ const ComposePage = () => {
               {/* Compose Card */}
               <div className="rounded-xl border bg-card compose-shadow">
                 <div className="px-5">
-                  <RecipientField selected={recipients} onSelectedChange={setRecipients} />
+                  <RecipientField selected={recipients} onSelectedChange={setRecipients} channel={channel} />
                   {channel === "email" && (
                     <>
                       <ComposeField

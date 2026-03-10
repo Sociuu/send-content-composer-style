@@ -10,6 +10,8 @@ import {
   Settings2,
   Pencil,
   Check,
+  Package,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -267,12 +269,18 @@ const ContentPanel = ({
             />
           ))}
           {items.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary mb-2">
-                <Settings2 className="h-4 w-4 text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-16 text-center px-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary mb-3">
+                <Package className="h-5 w-5 text-muted-foreground" />
               </div>
-              <p className="text-xs text-muted-foreground">No content selected</p>
-              <p className="text-[10px] text-muted-foreground/70 mt-0.5">Add content to configure delivery settings</p>
+              <p className="text-sm font-medium text-foreground mb-1">No content attached</p>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+                This message will be sent as text only. Add content like articles, links, or media to enrich your message.
+              </p>
+              <button className="flex items-center gap-1.5 rounded-lg border border-dashed border-muted-foreground/30 px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground hover:bg-secondary/50">
+                <Plus className="h-3.5 w-3.5" />
+                Browse content
+              </button>
             </div>
           )}
         </div>
