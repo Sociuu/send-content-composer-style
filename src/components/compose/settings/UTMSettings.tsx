@@ -241,7 +241,9 @@ const UTMSettings = ({
             );
           })}
         </div>
-      )}
+    </>
+  );
+
   if (embedded) return <div>{content}</div>;
 
   return (
