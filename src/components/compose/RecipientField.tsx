@@ -11,6 +11,7 @@ type RecipientType = "user" | "group" | "all" | "channel";
 interface Recipient {
   name: string;
   type: RecipientType;
+  count?: number;
 }
 
 const emailRecipients: Recipient[] = [
