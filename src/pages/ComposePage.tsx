@@ -20,7 +20,7 @@ import type { SendMode } from "@/components/compose/settings/SendModeSettings";
 import type { FinalizationMode } from "@/components/compose/settings/RecipientFinalizationSettings";
 import type { PulsingMode, TimeUnit } from "@/components/compose/settings/PulsingSettings";
 import type { TrackingConfig, ContentTrackingOverride } from "@/components/compose/settings/LinkTrackingSettings";
-import { EMPTY_TRACKING } from "@/components/compose/settings/LinkTrackingSettings";
+import { EMPTY_TRACKING, DEFAULT_TRACKING } from "@/components/compose/settings/LinkTrackingSettings";
 
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
