@@ -168,7 +168,7 @@ const AddParamPopover = ({
                   className="flex w-full items-center justify-between px-3 py-1.5 text-left text-[11px] transition-colors hover:bg-secondary"
                 >
                   <span className="text-foreground">{key}</span>
-                  <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-semibold text-amber-600">
+                  <span className="rounded-full bg-warning/10 px-1.5 py-0.5 text-[8px] font-semibold text-warning-foreground">
                     Required
                   </span>
                 </button>
