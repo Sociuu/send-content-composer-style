@@ -242,7 +242,7 @@ const ParamRow = ({
           <div className="flex items-center gap-1.5 flex-1 min-w-0">
             <span className="text-[11px] font-medium text-foreground">{param.key}</span>
             {isRequired && (
-              <span className="rounded bg-amber-500/10 px-1 py-0.5 text-[8px] font-semibold text-amber-600 shrink-0">
+              <span className="rounded bg-warning/10 px-1 py-0.5 text-[8px] font-semibold text-warning-foreground shrink-0">
                 Required
               </span>
             )}
