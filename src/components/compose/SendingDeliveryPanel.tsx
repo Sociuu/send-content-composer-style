@@ -304,8 +304,10 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
                   </div>
                   <span className="block text-[10px] text-muted-foreground">
                     {props.timezone.split("/")[1]?.replace("_", " ") || props.timezone}
-                    {props.hasGroupRecipients && (
-                      <> · Recipients {props.finalizationMode === "at-send-time" ? "finalized at send time" : "locked at schedule time"}</>
+                    {props.showFinalization && (
+                      <> · {props.finalizationMode === "at-send-time"
+                        ? (props.isAllEmployees ? "Platform roster finalized at send time" : "Recipients finalized at send time")
+                        : (props.isAllEmployees ? "Platform roster locked at schedule time" : "Recipients locked at schedule time")}</>
                     )}
                   </span>
                 </div>
