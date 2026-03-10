@@ -194,10 +194,14 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
       ? `${format(props.scheduleDate, "MMM d, yyyy")} at ${props.scheduleTime} (${props.timezone.split("/")[1]?.replace("_", " ") || props.timezone})`
       : "Scheduled — pick a date";
   const whenDetail =
-    whenActive && props.hasGroupRecipients
+    whenActive && props.showFinalization
       ? props.finalizationMode === "at-send-time"
-        ? "Recipients finalized at send time"
-        : "Recipients locked at schedule time"
+        ? props.isAllEmployees
+          ? "Platform roster finalized at send time"
+          : "Recipients finalized at send time"
+        : props.isAllEmployees
+          ? "Platform roster locked at schedule time"
+          : "Recipients locked at schedule time"
       : undefined;
 
   return (
