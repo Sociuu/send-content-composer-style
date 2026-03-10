@@ -56,7 +56,7 @@ const ComposePage = () => {
   const [resendDays, setResendDays] = useState(3);
 
   // Link tracking state
-  const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>(EMPTY_TRACKING);
+  const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>(DEFAULT_TRACKING);
   const [contentTrackingOverrides, setContentTrackingOverrides] = useState<Record<string, ContentTrackingOverride>>({});
 
   // Review & Send modal
