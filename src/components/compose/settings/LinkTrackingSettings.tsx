@@ -73,16 +73,9 @@ function sanitizeKey(raw: string): string {
     .slice(0, MAX_KEY_LENGTH);
 }
 
-function sanitizeValue(raw: string): string {
-  const parts = raw.split(/({{[^}]+}})/g);
-  return parts
-    .map((part) =>
-      part.startsWith("{{") && part.endsWith("}}")
-        ? part
-        : part.replace(/ /g, "%20")
-    )
-    .join("")
-    .slice(0, MAX_VALUE_LENGTH);
+/** Clean params: discard any without a key */
+export function cleanTrackingParams(config: TrackingConfig): TrackingConfig {
+  return { params: config.params.filter((p) => p.key.trim() !== "") };
 }
 
 function getUtmWarning(params: TrackingParam[]): string | null {
