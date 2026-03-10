@@ -93,10 +93,6 @@ const ComposeHeader = ({ draftStatus = "Draft", onBack, title, onTitleChange }: 
               <Archive className="h-3.5 w-3.5" />
               Archive
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2 text-xs">
-              <History className="h-3.5 w-3.5" />
-              Version history
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 text-xs text-destructive focus:text-destructive">
               <Trash2 className="h-3.5 w-3.5" />
