@@ -223,16 +223,73 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
           summary={resendSummary}
           isActive={resendActive}
           onEdit={() => setActiveModal("resend")}
-        />
-        <SummaryRow
-          icon={props.sendMode === "now" ? Zap : CalendarClock}
-          title="When to Send"
-          summary={whenSummary}
-          detail={whenDetail}
-          isActive={whenActive}
-          onEdit={() => setActiveModal("when")}
           isLast
         />
+      </div>
+
+      {/* When to Send — inline radio buttons */}
+      <div className="mt-4 overflow-hidden rounded-xl border bg-card">
+        <div className="px-4 py-3">
+          <span className="block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
+            When to Send
+          </span>
+          <div className="space-y-2">
+            <label
+              className={cn(
+                "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
+                props.sendMode === "now" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
+              )}
+            >
+              <input
+                type="radio"
+                name="whenToSend"
+                checked={props.sendMode === "now"}
+                onChange={() => props.onSendModeChange("now")}
+                className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
+              />
+              <div className="flex-1">
+                <span className="block text-xs font-medium text-foreground">Send Now</span>
+                <span className="block text-[11px] text-muted-foreground">Deliver immediately when you hit send</span>
+              </div>
+              <Zap className={cn("h-3.5 w-3.5", props.sendMode === "now" ? "text-primary" : "text-muted-foreground/40")} />
+            </label>
+            <label
+              className={cn(
+                "flex items-center gap-2.5 rounded-lg border px-3 py-2.5 cursor-pointer transition-colors",
+                props.sendMode === "schedule" ? "border-primary bg-primary/5" : "border-border hover:bg-secondary/40"
+              )}
+              onClick={(e) => {
+                if (props.sendMode !== "schedule") {
+                  props.onSendModeChange("schedule");
+                }
+                // Open modal to configure schedule details
+                setTimeout(() => setActiveModal("when"), 50);
+              }}
+            >
+              <input
+                type="radio"
+                name="whenToSend"
+                checked={props.sendMode === "schedule"}
+                readOnly
+                className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
+              />
+              <div className="flex-1">
+                <span className="block text-xs font-medium text-foreground">Schedule</span>
+                <span className="block text-[11px] text-muted-foreground">
+                  {props.sendMode === "schedule" && props.scheduleDate
+                    ? `${format(props.scheduleDate, "MMM d, yyyy")} at ${props.scheduleTime}`
+                    : "Pick a date & time to send later"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {props.sendMode === "schedule" && (
+                  <Pencil className="h-3 w-3 text-muted-foreground/50" />
+                )}
+                <CalendarClock className={cn("h-3.5 w-3.5", props.sendMode === "schedule" ? "text-primary" : "text-muted-foreground/40")} />
+              </div>
+            </label>
+          </div>
+        </div>
       </div>
 
       {/* ─── Edit Modals ─── */}
