@@ -81,8 +81,8 @@ const ComposePage = () => {
     );
   }, []);
 
-  const handlePerContentUTMChange = useCallback((contentId: string, params: UTMParams) => {
-    setUtmPerContentParams((prev) => ({ ...prev, [contentId]: params }));
+  const handleContentTrackingOverrideChange = useCallback((contentId: string, override: ContentTrackingOverride) => {
+    setContentTrackingOverrides((prev) => ({ ...prev, [contentId]: override }));
   }, []);
 
   const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
