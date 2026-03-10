@@ -175,7 +175,7 @@ const ConfigureSendModal = ({
 }: ReviewSendModalProps) => {
   const ChannelIcon = CHANNEL_CONFIG[channel].icon;
   const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
-  const trackingEnabled = trackingConfig.enabled;
+  const trackingEnabled = trackingConfig.params.length > 0;
   const trackingParamCount = trackingConfig.params.filter((p) => p.key && p.value).length;
 
   return (
