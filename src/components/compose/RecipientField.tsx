@@ -3,8 +3,12 @@ import { useState } from "react";
 
 const mockRecipients = ["Marketing Team", "All Employees", "Engineering", "Sales"];
 
-const RecipientField = () => {
-  const [selected, setSelected] = useState<string[]>(["Marketing Team"]);
+interface RecipientFieldProps {
+  selected: string[];
+  onSelectedChange: (selected: string[]) => void;
+}
+
+const RecipientField = ({ selected, onSelectedChange }: RecipientFieldProps) => {
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -13,13 +17,13 @@ const RecipientField = () => {
   );
 
   const addRecipient = (name: string) => {
-    setSelected([...selected, name]);
+    onSelectedChange([...selected, name]);
     setInputValue("");
     setShowSuggestions(false);
   };
 
   const removeRecipient = (name: string) => {
-    setSelected(selected.filter((r) => r !== name));
+    onSelectedChange(selected.filter((r) => r !== name));
   };
 
   return (
