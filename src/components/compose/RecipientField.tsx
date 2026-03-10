@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type RecipientType = "user" | "group";
+type RecipientType = "user" | "group" | "all";
 
 interface Recipient {
   name: string;
