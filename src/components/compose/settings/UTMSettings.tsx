@@ -139,6 +139,7 @@ interface UTMSettingsProps {
   onSharedParamsChange: (p: UTMParams) => void;
   perContentParams: Record<string, UTMParams>;
   onPerContentParamsChange: (contentId: string, p: UTMParams) => void;
+  embedded?: boolean;
 }
 
 const UTMSettings = ({
