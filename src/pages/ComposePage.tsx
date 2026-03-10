@@ -19,8 +19,8 @@ import type { ContentAccessMode } from "@/components/compose/ContentPanel";
 import type { SendMode } from "@/components/compose/settings/SendModeSettings";
 import type { FinalizationMode } from "@/components/compose/settings/RecipientFinalizationSettings";
 import type { PulsingMode, TimeUnit } from "@/components/compose/settings/PulsingSettings";
-import type { UTMMode, UTMParams } from "@/components/compose/settings/UTMSettings";
-import { EMPTY_UTM } from "@/components/compose/settings/UTMSettings";
+import type { TrackingConfig, ContentTrackingOverride } from "@/components/compose/settings/LinkTrackingSettings";
+import { EMPTY_TRACKING } from "@/components/compose/settings/LinkTrackingSettings";
 
 const ComposePage = () => {
   const [channel, setChannel] = useState<"email" | "slack" | "teams">("email");
@@ -55,10 +55,9 @@ const ComposePage = () => {
   const [resendEnabled, setResendEnabled] = useState(false);
   const [resendDays, setResendDays] = useState(3);
 
-  // UTM state
-  const [utmMode, setUtmMode] = useState<UTMMode>("shared");
-  const [utmSharedParams, setUtmSharedParams] = useState<UTMParams>(EMPTY_UTM);
-  const [utmPerContentParams, setUtmPerContentParams] = useState<Record<string, UTMParams>>({});
+  // Link tracking state
+  const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>(EMPTY_TRACKING);
+  const [contentTrackingOverrides, setContentTrackingOverrides] = useState<Record<string, ContentTrackingOverride>>({});
 
   // Review & Send modal
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -82,8 +81,8 @@ const ComposePage = () => {
     );
   }, []);
 
-  const handlePerContentUTMChange = useCallback((contentId: string, params: UTMParams) => {
-    setUtmPerContentParams((prev) => ({ ...prev, [contentId]: params }));
+  const handleContentTrackingOverrideChange = useCallback((contentId: string, override: ContentTrackingOverride) => {
+    setContentTrackingOverrides((prev) => ({ ...prev, [contentId]: override }));
   }, []);
 
   const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
@@ -229,12 +228,10 @@ const ComposePage = () => {
           onContentDistributionChange={setContentDistribution}
           contentAccessMode={contentAccessMode}
           onContentAccessModeChange={setContentAccessMode}
-          utmMode={utmMode}
-          onUTMModeChange={setUtmMode}
-          utmSharedParams={utmSharedParams}
-          onUTMSharedParamsChange={setUtmSharedParams}
-          utmPerContentParams={utmPerContentParams}
-          onUTMPerContentParamsChange={handlePerContentUTMChange}
+          trackingConfig={trackingConfig}
+          onTrackingConfigChange={setTrackingConfig}
+          contentTrackingOverrides={contentTrackingOverrides}
+          onContentTrackingOverrideChange={handleContentTrackingOverrideChange}
         />
       </div>
 

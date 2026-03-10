@@ -22,7 +22,11 @@ import { Button } from "@/components/ui/button";
 import ContentCard from "./ContentCard";
 import type { ContentItem } from "@/types/content";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
-import UTMSettings, { type UTMMode, type UTMParams, EMPTY_UTM } from "./settings/UTMSettings";
+import LinkTrackingSettings, {
+  type TrackingConfig,
+  type ContentTrackingOverride,
+  EMPTY_TRACKING,
+} from "./settings/LinkTrackingSettings";
 
 export type ContentAccessMode = "available" | "grant-all";
 
@@ -36,12 +40,10 @@ interface ContentPanelProps {
   onContentDistributionChange: (d: ContentDistribution) => void;
   contentAccessMode: ContentAccessMode;
   onContentAccessModeChange: (mode: ContentAccessMode) => void;
-  utmMode: UTMMode;
-  onUTMModeChange: (m: UTMMode) => void;
-  utmSharedParams: UTMParams;
-  onUTMSharedParamsChange: (p: UTMParams) => void;
-  utmPerContentParams: Record<string, UTMParams>;
-  onUTMPerContentParamsChange: (contentId: string, p: UTMParams) => void;
+  trackingConfig: TrackingConfig;
+  onTrackingConfigChange: (c: TrackingConfig) => void;
+  contentTrackingOverrides: Record<string, ContentTrackingOverride>;
+  onContentTrackingOverrideChange: (contentId: string, o: ContentTrackingOverride) => void;
 }
 
 const DIST_OPTIONS: { value: ContentDistribution; label: string; icon: typeof List }[] = [
@@ -162,12 +164,10 @@ const ContentPanel = ({
   onContentDistributionChange,
   contentAccessMode,
   onContentAccessModeChange,
-  utmMode,
-  onUTMModeChange,
-  utmSharedParams,
-  onUTMSharedParamsChange,
-  utmPerContentParams,
-  onUTMPerContentParamsChange,
+  trackingConfig,
+  onTrackingConfigChange,
+  contentTrackingOverrides,
+  onContentTrackingOverrideChange,
 }: ContentPanelProps) => {
   const [activeModal, setActiveModal] = useState<ModalId>(null);
 
@@ -190,12 +190,14 @@ const ContentPanel = ({
       ? "Each recipient gets one item"
       : "Content sent in current order";
 
-  const utmActive = !!(utmSharedParams.source || utmSharedParams.campaign || Object.keys(utmPerContentParams).some(k => utmPerContentParams[k]?.source));
-  const utmSummary = utmMode === "per-content"
-    ? "Per-content UTM parameters"
-    : utmSharedParams.source
-    ? `source=${utmSharedParams.source}${utmSharedParams.campaign ? `, campaign=${utmSharedParams.campaign}` : ""}`
-    : "No UTM parameters configured";
+  const hasGlobalTracking = !!(trackingConfig.utmSource || trackingConfig.utmCampaign || trackingConfig.customParams.length > 0);
+  const overrideCount = Object.values(contentTrackingOverrides).filter((o) => o.mode !== "inherit").length;
+  const trackingActive = hasGlobalTracking || overrideCount > 0;
+  const trackingSummary = hasGlobalTracking
+    ? `source=${trackingConfig.utmSource || "—"}${trackingConfig.utmCampaign ? `, campaign=${trackingConfig.utmCampaign}` : ""}${trackingConfig.customParams.length > 0 ? ` +${trackingConfig.customParams.length} custom` : ""}${overrideCount > 0 ? ` · ${overrideCount} override${overrideCount > 1 ? "s" : ""}` : ""}`
+    : overrideCount > 0
+    ? `${overrideCount} content override${overrideCount > 1 ? "s" : ""}`
+    : "No tracking configured";
 
   return (
     <div className="w-[360px] shrink-0 border-l bg-card flex flex-col overflow-hidden">
@@ -238,9 +240,9 @@ const ContentPanel = ({
             {linkContentIds.length > 0 && (
               <SummaryRow
                 icon={Link2}
-                title="UTM Parameters"
-                summary={utmSummary}
-                isActive={utmActive}
+                title="Link Tracking"
+                summary={trackingSummary}
+                isActive={trackingActive}
                 onEdit={() => setActiveModal("utm")}
                 isLast
               />
@@ -404,17 +406,15 @@ const ContentPanel = ({
       <EditModal
         open={activeModal === "utm"}
         onClose={() => setActiveModal(null)}
-        title="UTM Parameters"
+        title="Link Tracking"
       >
-        <UTMSettings
+        <LinkTrackingSettings
           linkContentIds={linkContentIds}
           linkContentTitles={linkContentTitles}
-          mode={utmMode}
-          onModeChange={onUTMModeChange}
-          sharedParams={utmSharedParams}
-          onSharedParamsChange={onUTMSharedParamsChange}
-          perContentParams={utmPerContentParams}
-          onPerContentParamsChange={onUTMPerContentParamsChange}
+          globalConfig={trackingConfig}
+          onGlobalConfigChange={onTrackingConfigChange}
+          contentOverrides={contentTrackingOverrides}
+          onContentOverrideChange={onContentTrackingOverrideChange}
           embedded
         />
       </EditModal>
