@@ -391,13 +391,14 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
             hideModePicker
           />
 
-          {props.hasGroupRecipients && (
+          {props.showFinalization && (
             <div className="border-t pt-4">
               <RecipientFinalizationSettings
                 mode={props.finalizationMode}
                 onModeChange={props.onFinalizationModeChange}
                 removeDroppedMembers={props.removeDropped}
                 onRemoveDroppedMembersChange={props.onRemoveDroppedChange}
+                isAllEmployees={props.isAllEmployees}
               />
             </div>
           )}
