@@ -406,17 +406,15 @@ const ContentPanel = ({
       <EditModal
         open={activeModal === "utm"}
         onClose={() => setActiveModal(null)}
-        title="UTM Parameters"
+        title="Link Tracking"
       >
-        <UTMSettings
+        <LinkTrackingSettings
           linkContentIds={linkContentIds}
           linkContentTitles={linkContentTitles}
-          mode={utmMode}
-          onModeChange={onUTMModeChange}
-          sharedParams={utmSharedParams}
-          onSharedParamsChange={onUTMSharedParamsChange}
-          perContentParams={utmPerContentParams}
-          onPerContentParamsChange={onUTMPerContentParamsChange}
+          globalConfig={trackingConfig}
+          onGlobalConfigChange={onTrackingConfigChange}
+          contentOverrides={contentTrackingOverrides}
+          onContentOverrideChange={onContentTrackingOverrideChange}
           embedded
         />
       </EditModal>

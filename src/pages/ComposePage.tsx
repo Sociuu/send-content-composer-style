@@ -228,12 +228,10 @@ const ComposePage = () => {
           onContentDistributionChange={setContentDistribution}
           contentAccessMode={contentAccessMode}
           onContentAccessModeChange={setContentAccessMode}
-          utmMode={utmMode}
-          onUTMModeChange={setUtmMode}
-          utmSharedParams={utmSharedParams}
-          onUTMSharedParamsChange={setUtmSharedParams}
-          utmPerContentParams={utmPerContentParams}
-          onUTMPerContentParamsChange={handlePerContentUTMChange}
+          trackingConfig={trackingConfig}
+          onTrackingConfigChange={setTrackingConfig}
+          contentTrackingOverrides={contentTrackingOverrides}
+          onContentTrackingOverrideChange={handleContentTrackingOverrideChange}
         />
       </div>
 
