@@ -21,6 +21,7 @@ interface SendModeSettingsProps {
   onScheduleTimeChange: (time: string) => void;
   timezone: string;
   onTimezoneChange: (tz: string) => void;
+  hideModePicker?: boolean;
 }
 
 const TIMEZONES = [
