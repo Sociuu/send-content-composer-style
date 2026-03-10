@@ -176,17 +176,20 @@ const RecipientField = ({ selected, onSelectedChange }: RecipientFieldProps) => 
       {showSuggestions && filtered.length > 0 && (
         <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded-lg border bg-card p-1 compose-shadow-elevated">
           {filtered.map((recipient) => {
-            const Icon = recipient.type === "group" ? Users : User;
+            const Icon = recipient.type === "all" ? Globe : recipient.type === "group" ? Users : User;
+            const typeLabel = recipient.type === "all" ? "everyone" : recipient.type;
             return (
               <button
                 key={recipient.name}
                 onMouseDown={() => addRecipient(recipient.name)}
-                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-secondary"
+                className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${
+                  recipient.type === "all" ? "text-foreground font-medium" : "text-foreground"
+                }`}
               >
                 <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="flex-1">{recipient.name}</span>
                 <span className="text-[10px] text-muted-foreground capitalize">
-                  {recipient.type}
+                  {typeLabel}
                 </span>
               </button>
             );
