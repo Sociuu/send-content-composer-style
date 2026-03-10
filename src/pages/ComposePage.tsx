@@ -292,9 +292,35 @@ const ComposePage = () => {
       <ConfigureSendModal
         open={showReviewModal}
         onOpenChange={setShowReviewModal}
+        onConfirm={() => setShowReviewModal(false)}
+        channel={channel}
+        messageTitle={messageTitle}
+        subject={subject}
+        previewText={preview}
+        bodyLength={body.length}
+        recipients={recipients}
         contentCount={contentItems.length}
-        hasGroupRecipients={recipients.length > 0}
         contentDistribution={contentDistribution}
+        contentAccessMode={contentAccessMode}
+        sendMode={sendMode}
+        scheduleDate={scheduleDate}
+        scheduleTime={scheduleTime}
+        timezone={timezone}
+        hasGroupRecipients={recipients.length > 0}
+        finalizationMode={finalizationMode}
+        pulsingEnabled={pulsingEnabled}
+        pulsingMode={pulsingMode}
+        rateCount={rateCount}
+        rateUnit={rateUnit}
+        distributeDuration={distributeDuration}
+        distributeUnit={distributeUnit}
+        deliveryWindowEnabled={deliveryWindowEnabled}
+        allowedDays={allowedDays}
+        windowStartTime={windowStartTime}
+        windowEndTime={windowEndTime}
+        resendEnabled={resendEnabled}
+        resendDays={resendDays}
+        trackingConfig={trackingConfig}
       />
     </div>
   );

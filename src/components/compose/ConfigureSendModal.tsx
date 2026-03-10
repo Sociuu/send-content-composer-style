@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,207 +5,330 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, CalendarClock, Timer, Clock, RotateCcw } from "lucide-react";
-import SendModeSettings, { type SendMode } from "./settings/SendModeSettings";
-import RecipientFinalizationSettings, { type FinalizationMode } from "./settings/RecipientFinalizationSettings";
-import PulsingSettings, { type PulsingMode, type TimeUnit } from "./settings/PulsingSettings";
-import DeliveryWindowSettings from "./settings/DeliveryWindowSettings";
-import ResendSettings from "./settings/ResendSettings";
-import SendConfirmationDialog from "./settings/SendConfirmationDialog";
+import {
+  ArrowRight,
+  Zap,
+  CalendarClock,
+  Timer,
+  Clock,
+  RotateCcw,
+  Users,
+  Mail,
+  MessageSquare,
+  Hash,
+  Paperclip,
+  Shuffle,
+  SplitSquareHorizontal,
+  List,
+  Link2,
+  Eye,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
+import { format } from "date-fns";
+import type { SendMode } from "./settings/SendModeSettings";
+import type { FinalizationMode } from "./settings/RecipientFinalizationSettings";
+import type { PulsingMode, TimeUnit } from "./settings/PulsingSettings";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
+import type { TrackingConfig } from "./settings/LinkTrackingSettings";
+import type { ContentAccessMode } from "./ContentPanel";
 
-interface ConfigureSendModalProps {
+interface ReviewSendModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+
+  // Message
+  channel: "email" | "slack" | "teams";
+  messageTitle: string;
+  subject: string;
+  previewText: string;
+  bodyLength: number;
+
+  // Recipients
+  recipients: string[];
+
+  // Content
   contentCount: number;
-  hasGroupRecipients: boolean;
   contentDistribution: ContentDistribution;
+  contentAccessMode: ContentAccessMode;
+
+  // Sending
+  sendMode: SendMode;
+  scheduleDate?: Date;
+  scheduleTime: string;
+  timezone: string;
+
+  // Recipient finalization
+  hasGroupRecipients: boolean;
+  finalizationMode: FinalizationMode;
+
+  // Pulsing
+  pulsingEnabled: boolean;
+  pulsingMode: PulsingMode;
+  rateCount: number;
+  rateUnit: TimeUnit;
+  distributeDuration: number;
+  distributeUnit: TimeUnit;
+
+  // Delivery window
+  deliveryWindowEnabled: boolean;
+  allowedDays: string[];
+  windowStartTime: string;
+  windowEndTime: string;
+
+  // Resend
+  resendEnabled: boolean;
+  resendDays: number;
+
+  // Tracking
+  trackingConfig: TrackingConfig;
 }
 
-const SectionWrapper = ({
+const DAY_LABELS: Record<string, string> = {
+  mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
+};
+
+const CHANNEL_CONFIG = {
+  email: { icon: Mail, label: "Email" },
+  slack: { icon: Hash, label: "Slack" },
+  teams: { icon: MessageSquare, label: "Teams" },
+};
+
+// ─── Review Section ───
+const ReviewSection = ({
   icon: Icon,
   title,
   children,
+  status = "ok",
 }: {
-  icon: typeof Timer;
+  icon: typeof Clock;
   title: string;
   children: React.ReactNode;
+  status?: "ok" | "warn" | "info";
 }) => (
-  <div className="rounded-xl border bg-card p-4">
-    <div className="mb-3 flex items-center gap-2">
-      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
-        <Icon className="h-3.5 w-3.5 text-primary" />
+  <div className="group">
+    <div className="flex items-start gap-3 py-3">
+      <div className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+        status === "warn" ? "bg-destructive/10" : "bg-primary/10"
+      }`}>
+        <Icon className={`h-3.5 w-3.5 ${status === "warn" ? "text-destructive" : "text-primary"}`} />
       </div>
-      <span className="text-xs font-semibold text-foreground">{title}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-1">{title}</p>
+        <div className="text-sm text-foreground">{children}</div>
+      </div>
     </div>
-    {children}
   </div>
 );
 
-const ConfigureSendModal = ({ open, onOpenChange, contentCount, hasGroupRecipients, contentDistribution }: ConfigureSendModalProps) => {
-  const [confirmOpen, setConfirmOpen] = useState(false);
+const ReviewValue = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
+  <div className="flex items-baseline justify-between gap-4 py-0.5">
+    <span className="text-xs text-muted-foreground shrink-0">{label}</span>
+    <span className={`text-xs font-medium text-foreground text-right truncate ${mono ? "font-mono" : ""}`}>{value}</span>
+  </div>
+);
 
-  const [sendMode, setSendMode] = useState<SendMode>("now");
-  const [scheduleDate, setScheduleDate] = useState<Date | undefined>();
-  const [scheduleTime, setScheduleTime] = useState("09:00");
-  const [timezone, setTimezone] = useState("Europe/Copenhagen");
-  const [finalizationMode, setFinalizationMode] = useState<FinalizationMode>("at-send-time");
-  const [removeDropped, setRemoveDropped] = useState(false);
-  const [pulsingEnabled, setPulsingEnabled] = useState(false);
-  const [pulsingMode, setPulsingMode] = useState<PulsingMode>("rate");
-  const [rateCount, setRateCount] = useState(50);
-  const [rateUnit, setRateUnit] = useState<TimeUnit>("hours");
-  const [distributeDuration, setDistributeDuration] = useState(4);
-  const [distributeUnit, setDistributeUnit] = useState<TimeUnit>("hours");
-  const [deliveryWindowEnabled, setDeliveryWindowEnabled] = useState(false);
-  const [allowedDays, setAllowedDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri"]);
-  const [windowStartTime, setWindowStartTime] = useState("08:00");
-  const [windowEndTime, setWindowEndTime] = useState("17:00");
-  const [windowTimezone, setWindowTimezone] = useState("Europe/Copenhagen");
-  const [resendEnabled, setResendEnabled] = useState(false);
-  const [resendDays, setResendDays] = useState(3);
+const Tag = ({ children, variant = "default" }: { children: React.ReactNode; variant?: "default" | "muted" }) => (
+  <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium ${
+    variant === "muted"
+      ? "bg-secondary text-secondary-foreground"
+      : "bg-primary/10 text-primary"
+  }`}>
+    {children}
+  </span>
+);
 
+const ConfigureSendModal = ({
+  open,
+  onOpenChange,
+  onConfirm,
+  channel,
+  messageTitle,
+  subject,
+  previewText,
+  bodyLength,
+  recipients,
+  contentCount,
+  contentDistribution,
+  contentAccessMode,
+  sendMode,
+  scheduleDate,
+  scheduleTime,
+  timezone,
+  hasGroupRecipients,
+  finalizationMode,
+  pulsingEnabled,
+  pulsingMode,
+  rateCount,
+  rateUnit,
+  distributeDuration,
+  distributeUnit,
+  deliveryWindowEnabled,
+  allowedDays,
+  windowStartTime,
+  windowEndTime,
+  resendEnabled,
+  resendDays,
+  trackingConfig,
+}: ReviewSendModalProps) => {
+  const ChannelIcon = CHANNEL_CONFIG[channel].icon;
   const actionLabel = sendMode === "now" ? "Send Now" : "Schedule Send";
+  const trackingEnabled = trackingConfig.params.length > 0;
+  const trackingParamCount = trackingConfig.params.filter((p) => p.key && p.value).length;
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg p-0">
-          <DialogHeader className="sticky top-0 z-10 border-b bg-card px-6 py-4">
-            <DialogTitle className="text-sm font-semibold">Review & Send</DialogTitle>
-            <p className="text-[11px] text-muted-foreground">
-              Configure delivery options before sending your message.
-            </p>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg p-0 gap-0">
+        {/* Header */}
+        <DialogHeader className="sticky top-0 z-10 border-b bg-card px-6 py-4">
+          <DialogTitle className="text-sm font-semibold">Review & Send</DialogTitle>
+          <p className="text-[11px] text-muted-foreground">
+            Review your message details before sending.
+          </p>
+        </DialogHeader>
 
-          <div className="space-y-3 px-6 py-4">
-            {/* 1. Pulsing */}
-            <SectionWrapper icon={Timer} title="Pulsing">
-              <PulsingSettings
-                enabled={pulsingEnabled}
-                onEnabledChange={setPulsingEnabled}
-                mode={pulsingMode}
-                onModeChange={setPulsingMode}
-                rateCount={rateCount}
-                onRateCountChange={setRateCount}
-                rateUnit={rateUnit}
-                onRateUnitChange={setRateUnit}
-                distributeDuration={distributeDuration}
-                onDistributeDurationChange={setDistributeDuration}
-                distributeUnit={distributeUnit}
-                onDistributeUnitChange={setDistributeUnit}
-                estimatedFirst="Mar 10, 2026 at 09:00"
-                estimatedLast="Mar 10, 2026 at 13:00"
-              />
-
-              {/* Delivery Window nested under Pulsing when enabled */}
-              {pulsingEnabled && (
-                <div className="mt-3 border-t pt-3">
-                  <DeliveryWindowSettings
-                    enabled={deliveryWindowEnabled}
-                    onEnabledChange={setDeliveryWindowEnabled}
-                    allowedDays={allowedDays}
-                    onAllowedDaysChange={setAllowedDays}
-                    startTime={windowStartTime}
-                    onStartTimeChange={setWindowStartTime}
-                    endTime={windowEndTime}
-                    onEndTimeChange={setWindowEndTime}
-                    timezone={windowTimezone}
-                    onTimezoneChange={setWindowTimezone}
-                  />
-                </div>
+        {/* Review sections */}
+        <div className="px-6 py-2 divide-y divide-border">
+          {/* Message overview */}
+          <ReviewSection icon={FileText} title="Message">
+            <p className="text-sm font-medium truncate">{messageTitle}</p>
+            <div className="mt-1.5 space-y-0.5">
+              <ReviewValue label="Channel" value={CHANNEL_CONFIG[channel].label} />
+              {channel === "email" && subject && (
+                <ReviewValue label="Subject" value={subject} />
               )}
-            </SectionWrapper>
+              {channel === "email" && previewText && (
+                <ReviewValue label="Preview text" value={previewText} />
+              )}
+              <ReviewValue label="Body" value={bodyLength > 0 ? `${bodyLength} characters` : "Empty"} />
+            </div>
+          </ReviewSection>
 
-            {/* 2. Resend */}
-            <SectionWrapper icon={RotateCcw} title="Resend">
-              <ResendSettings
-                enabled={resendEnabled}
-                onEnabledChange={setResendEnabled}
-                daysAfter={resendDays}
-                onDaysAfterChange={setResendDays}
+          {/* Recipients */}
+          <ReviewSection icon={Users} title="Recipients">
+            <div className="flex flex-wrap gap-1.5">
+              {recipients.map((r) => (
+                <Tag key={r} variant="muted">{r}</Tag>
+              ))}
+            </div>
+          </ReviewSection>
+
+          {/* Content */}
+          {contentCount > 0 && (
+            <ReviewSection icon={Paperclip} title="Content">
+              <div className="space-y-0.5">
+                <ReviewValue label="Items" value={`${contentCount} content item${contentCount !== 1 ? "s" : ""}`} />
+                <ReviewValue
+                  label="Distribution"
+                  value={
+                    contentDistribution === "randomize"
+                      ? "Randomized order"
+                      : contentDistribution === "split"
+                      ? "Split send (one per recipient)"
+                      : "Manual order"
+                  }
+                />
+                <ReviewValue
+                  label="Access"
+                  value={contentAccessMode === "available" ? "Send available" : "Grant access to all"}
+                />
+              </div>
+            </ReviewSection>
+          )}
+
+          {/* Delivery */}
+          <ReviewSection
+            icon={sendMode === "now" ? Zap : CalendarClock}
+            title="Delivery"
+          >
+            <div className="space-y-0.5">
+              <ReviewValue
+                label="When"
+                value={
+                  sendMode === "now"
+                    ? "Send immediately"
+                    : `${scheduleDate ? format(scheduleDate, "MMM d, yyyy") : "—"} at ${scheduleTime} (${timezone})`
+                }
               />
-            </SectionWrapper>
-
-            {/* 3. Send Mode — final step */}
-            <SectionWrapper
-              icon={sendMode === "now" ? Zap : CalendarClock}
-              title="When to Send"
-            >
-              <SendModeSettings
-                mode={sendMode}
-                onModeChange={setSendMode}
-                scheduleDate={scheduleDate}
-                onScheduleDateChange={setScheduleDate}
-                scheduleTime={scheduleTime}
-                onScheduleTimeChange={setScheduleTime}
-                timezone={timezone}
-                onTimezoneChange={setTimezone}
-              />
-
-              {/* Recipient finalization — only for scheduled group sends */}
               {sendMode === "schedule" && hasGroupRecipients && (
-                <div className="mt-3 border-t pt-3">
-                  <RecipientFinalizationSettings
-                    mode={finalizationMode}
-                    onModeChange={setFinalizationMode}
-                    removeDroppedMembers={removeDropped}
-                    onRemoveDroppedMembersChange={setRemoveDropped}
-                  />
-                </div>
+                <ReviewValue
+                  label="Finalization"
+                  value={finalizationMode === "at-send-time" ? "At send time" : "Locked at schedule time"}
+                />
               )}
-            </SectionWrapper>
-          </div>
+            </div>
+          </ReviewSection>
 
-          {/* Sticky footer */}
-          <div className="sticky bottom-0 flex items-center justify-between border-t bg-card px-6 py-3">
-            <button
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            >
-              Cancel
-            </button>
-            <Button
-              size="sm"
-              onClick={() => {
-                onOpenChange(false);
-                setConfirmOpen(true);
-              }}
-              className="gap-1.5"
-            >
-              {actionLabel}
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          {/* Pulsing & Delivery window */}
+          {(pulsingEnabled || deliveryWindowEnabled) && (
+            <ReviewSection icon={Timer} title="Throttling">
+              <div className="space-y-0.5">
+                {pulsingEnabled && (
+                  <ReviewValue
+                    label="Pulsing"
+                    value={
+                      pulsingMode === "rate"
+                        ? `${rateCount} per ${rateUnit}`
+                        : `Over ${distributeDuration} ${distributeUnit}`
+                    }
+                  />
+                )}
+                {deliveryWindowEnabled && (
+                  <>
+                    <ReviewValue
+                      label="Window"
+                      value={`${windowStartTime}–${windowEndTime}`}
+                    />
+                    <ReviewValue
+                      label="Days"
+                      value={allowedDays.map((d) => DAY_LABELS[d] || d).join(", ")}
+                    />
+                  </>
+                )}
+              </div>
+            </ReviewSection>
+          )}
 
-      <SendConfirmationDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        onConfirm={() => setConfirmOpen(false)}
-        sendMode={sendMode}
-        scheduleDate={scheduleDate}
-        scheduleTime={scheduleTime}
-        timezone={timezone}
-        hasGroupRecipients={hasGroupRecipients}
-        finalizationMode={finalizationMode}
-        pulsingEnabled={pulsingEnabled}
-        pulsingMode={pulsingMode}
-        rateCount={rateCount}
-        rateUnit={rateUnit}
-        distributeDuration={distributeDuration}
-        distributeUnit={distributeUnit}
-        deliveryWindowEnabled={deliveryWindowEnabled}
-        allowedDays={allowedDays}
-        windowStartTime={windowStartTime}
-        windowEndTime={windowEndTime}
-        contentCount={contentCount}
-        contentDistribution={contentDistribution}
-        resendEnabled={resendEnabled}
-        resendDays={resendDays}
-      />
-    </>
+          {/* Resend */}
+          {resendEnabled && (
+            <ReviewSection icon={RotateCcw} title="Resend">
+              <ReviewValue
+                label="Non-openers"
+                value={`After ${resendDays} day${resendDays !== 1 ? "s" : ""}`}
+              />
+            </ReviewSection>
+          )}
+
+          {/* Link tracking */}
+          <ReviewSection icon={Link2} title="Link Tracking">
+            <ReviewValue
+              label="Status"
+              value={trackingEnabled ? `Enabled · ${trackingParamCount} parameter${trackingParamCount !== 1 ? "s" : ""}` : "Disabled"}
+            />
+          </ReviewSection>
+        </div>
+
+        {/* Footer */}
+        <div className="sticky bottom-0 flex items-center justify-between border-t bg-card px-6 py-3">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            Go Back
+          </button>
+          <Button
+            size="sm"
+            onClick={onConfirm}
+            className="gap-1.5"
+          >
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            {actionLabel}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
