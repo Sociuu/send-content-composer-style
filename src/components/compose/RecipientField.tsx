@@ -40,14 +40,17 @@ const RecipientChip = ({
   onRemove: () => void;
 }) => {
   const isGroup = recipient.type === "group";
-  const Icon = isGroup ? Users : User;
+  const isAll = recipient.type === "all";
+  const Icon = isAll ? Globe : isGroup ? Users : User;
 
   return (
     <span
-      className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-secondary-foreground ${
-        isGroup
-          ? "bg-primary/10 border border-primary/15"
-          : "bg-secondary"
+      className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium ${
+        isAll
+          ? "bg-primary text-primary-foreground"
+          : isGroup
+            ? "bg-primary/10 border border-primary/15 text-secondary-foreground"
+            : "bg-secondary text-secondary-foreground"
       }`}
     >
       <Icon className="h-3 w-3 shrink-0 text-muted-foreground" />
