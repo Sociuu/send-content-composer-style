@@ -282,7 +282,7 @@ const ParamRow = ({
 const TrackingForm = ({
   config,
   onChange,
-  showWarning?: boolean,
+  showWarning = true,
 }: {
   config: TrackingConfig;
   onChange: (c: TrackingConfig) => void;
