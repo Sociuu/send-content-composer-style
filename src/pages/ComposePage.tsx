@@ -11,7 +11,13 @@ import SendingDeliveryPanel from "@/components/compose/SendingDeliveryPanel";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreviewActions from "@/components/compose/PreviewActions";
 import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
-import { Paperclip, ArrowRight } from "lucide-react";
+import { Paperclip, ArrowRight, AlertCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { mockContentItems, type ContentItem } from "@/types/content";
 import type { ContentDistribution } from "@/components/compose/settings/ContentDistributionSettings";
