@@ -135,7 +135,7 @@ const RecipientField = ({ selected, onSelectedChange }: RecipientFieldProps) => 
                 </p>
                 <div className="max-h-48 space-y-0.5 overflow-y-auto">
                   {selectedRecipients.map((recipient) => {
-                    const Icon = recipient.type === "group" ? Users : User;
+                    const Icon = recipient.type === "all" ? Globe : recipient.type === "group" ? Users : User;
                     return (
                       <div
                         key={recipient.name}
