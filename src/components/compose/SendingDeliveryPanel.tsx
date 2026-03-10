@@ -320,7 +320,7 @@ const SendingDeliveryPanel = (props: SendingDeliveryPanelProps) => {
           )}
         </div>
       </EditModal>
-
+    </div>
   );
 };
 
