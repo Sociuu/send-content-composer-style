@@ -66,7 +66,7 @@ const PulsingSettings = ({
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Send X per Y
+              Rate limit
             </button>
             <button
               onClick={() => onModeChange("distribute")}

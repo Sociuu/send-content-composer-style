@@ -47,7 +47,7 @@ const ComposePage = () => {
   const [rateUnit, setRateUnit] = useState<TimeUnit>("hours");
   const [distributeDuration, setDistributeDuration] = useState(4);
   const [distributeUnit, setDistributeUnit] = useState<TimeUnit>("hours");
-  const [deliveryWindowEnabled, setDeliveryWindowEnabled] = useState(false);
+  const [deliveryWindowEnabled, setDeliveryWindowEnabled] = useState(true);
   const [allowedDays, setAllowedDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri"]);
   const [windowStartTime, setWindowStartTime] = useState("08:00");
   const [windowEndTime, setWindowEndTime] = useState("17:00");
