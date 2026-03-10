@@ -172,6 +172,14 @@ const ContentPanel = ({
 }: ContentPanelProps) => {
   const [activeModal, setActiveModal] = useState<ModalId>(null);
 
+  const closeModal = (modal: ModalId) => {
+    if (modal === "utm") {
+      // Discard params with empty keys on save
+      onTrackingConfigChange(cleanTrackingParams(trackingConfig));
+    }
+    setActiveModal(null);
+  };
+
   if (!visible) return null;
 
   const linkItems = items.filter((i) => i.type === "link");
