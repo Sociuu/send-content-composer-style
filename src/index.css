@@ -87,6 +87,8 @@
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 260 15% 18%;
     --sidebar-ring: 265 50% 65%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 80% 25%;
   }
 }
 
