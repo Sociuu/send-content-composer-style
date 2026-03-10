@@ -415,7 +415,7 @@ const ContentPanel = ({
 
       <EditModal
         open={activeModal === "utm"}
-        onClose={() => setActiveModal(null)}
+        onClose={() => closeModal("utm")}
         title="Link Tracking"
       >
         <LinkTrackingSettings
