@@ -18,6 +18,7 @@ interface ContentCardProps {
   compact?: boolean;
   onRemove: (id: string) => void;
   onToggleNetwork: (contentId: string, networkId: string) => void;
+  showDragHandle?: boolean;
 }
 
 const typeConfig = {
