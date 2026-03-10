@@ -169,7 +169,7 @@ const ConfigureSendModal = ({ open, onOpenChange, contentCount, hasGroupRecipien
             <Button
               size="sm"
               onClick={() => {
-                setOpen(false);
+                onOpenChange(false);
                 setConfirmOpen(true);
               }}
               className="gap-1.5"
