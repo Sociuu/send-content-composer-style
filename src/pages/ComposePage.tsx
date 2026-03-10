@@ -11,7 +11,7 @@ import SendingDeliveryPanel from "@/components/compose/SendingDeliveryPanel";
 import ConfigureSendModal from "@/components/compose/ConfigureSendModal";
 import PreviewActions from "@/components/compose/PreviewActions";
 import EmailPreviewModal from "@/components/compose/EmailPreviewModal";
-import { Paperclip, ArrowRight, AlertCircle } from "lucide-react";
+import { Paperclip, ArrowRight, AlertCircle, PanelRightOpen, PanelRightClose } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
