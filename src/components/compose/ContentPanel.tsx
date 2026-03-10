@@ -240,9 +240,9 @@ const ContentPanel = ({
             {linkContentIds.length > 0 && (
               <SummaryRow
                 icon={Link2}
-                title="UTM Parameters"
-                summary={utmSummary}
-                isActive={utmActive}
+                title="Link Tracking"
+                summary={trackingSummary}
+                isActive={trackingActive}
                 onEdit={() => setActiveModal("utm")}
                 isLast
               />
