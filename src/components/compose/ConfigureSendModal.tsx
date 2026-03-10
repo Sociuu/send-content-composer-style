@@ -45,6 +45,7 @@ interface ReviewSendModalProps {
   subject: string;
   previewText: string;
   bodyLength: number;
+  footerLength: number;
 
   // Recipients
   recipients: string[];
