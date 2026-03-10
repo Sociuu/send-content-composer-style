@@ -161,7 +161,7 @@ const ConfigureSendModal = ({ open, onOpenChange, contentCount, hasGroupRecipien
           {/* Sticky footer */}
           <div className="sticky bottom-0 flex items-center justify-between border-t bg-card px-6 py-3">
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               className="rounded-lg px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               Cancel
