@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowLeft, Clock, Pencil } from "lucide-react";
+import { ArrowLeft, Clock, Pencil, MoreVertical, Trash2, Copy, Archive, Pin, History, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ComposeHeaderProps {
   draftStatus?: string;
@@ -71,9 +78,47 @@ const ComposeHeader = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Clock className="h-3 w-3" />
-        <span>{draftStatus}</span>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Clock className="h-3 w-3" />
+          <span>{draftStatus}</span>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+              <MoreVertical className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem className="gap-2 text-xs">
+              <Copy className="h-3.5 w-3.5" />
+              Duplicate message
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 text-xs">
+              <FileText className="h-3.5 w-3.5" />
+              Save as template
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 text-xs">
+              <Pin className="h-3.5 w-3.5" />
+              Pin to dashboard
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 text-xs">
+              <Archive className="h-3.5 w-3.5" />
+              Archive
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 text-xs">
+              <History className="h-3.5 w-3.5" />
+              Version history
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 text-xs text-destructive focus:text-destructive">
+              <Trash2 className="h-3.5 w-3.5" />
+              Delete message
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
