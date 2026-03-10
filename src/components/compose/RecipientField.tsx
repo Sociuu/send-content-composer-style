@@ -1,4 +1,4 @@
-import { X, User, Users } from "lucide-react";
+import { X, User, Users, Globe } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Popover,
