@@ -116,12 +116,26 @@ const ComposePage = () => {
                 <ChannelSelector selected={channel} onChange={setChannel} />
                 <button
                   onClick={() => setShowContentPanel(!showContentPanel)}
-                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
+                    showContentPanel
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  )}
                 >
-                  <Paperclip className="h-3.5 w-3.5" />
+                  {showContentPanel ? (
+                    <PanelRightClose className="h-3.5 w-3.5" />
+                  ) : (
+                    <PanelRightOpen className="h-3.5 w-3.5" />
+                  )}
                   Content
                   {contentItems.length > 0 && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                    <span className={cn(
+                      "flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold",
+                      showContentPanel
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted-foreground/20 text-muted-foreground"
+                    )}>
                       {contentItems.length}
                     </span>
                   )}
