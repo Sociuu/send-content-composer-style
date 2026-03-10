@@ -26,12 +26,12 @@ const emailRecipients: Recipient[] = [
 ];
 
 const messagingRecipients: Recipient[] = [
-  { name: "#general", type: "channel" },
-  { name: "#marketing", type: "channel" },
-  { name: "#engineering", type: "channel" },
-  { name: "#announcements", type: "channel" },
-  { name: "#sales", type: "channel" },
-  { name: "#random", type: "channel" },
+  { name: "General", type: "channel" },
+  { name: "Marketing", type: "channel" },
+  { name: "Engineering", type: "channel" },
+  { name: "Announcements", type: "channel" },
+  { name: "Sales", type: "channel" },
+  { name: "Random", type: "channel" },
 ];
 
 function getIcon(type: RecipientType) {

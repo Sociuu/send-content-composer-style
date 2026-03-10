@@ -33,9 +33,7 @@ const ComposePage = () => {
   const [recipients, setRecipients] = useState<string[]>(["Marketing Team"]);
 
   const handleChannelChange = (newChannel: "email" | "slack" | "teams") => {
-    const wasMessaging = channel === "slack" || channel === "teams";
-    const isMessaging = newChannel === "slack" || newChannel === "teams";
-    if (wasMessaging !== isMessaging) {
+    if (newChannel !== channel) {
       setRecipients([]);
     }
     setChannel(newChannel);
