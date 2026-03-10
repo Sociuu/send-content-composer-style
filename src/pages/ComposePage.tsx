@@ -131,7 +131,7 @@ const ComposePage = () => {
               {/* Compose Card */}
               <div className="rounded-xl border bg-card compose-shadow">
                 <div className="px-5">
-                  <RecipientField selected={recipients} onSelectedChange={setRecipients} />
+                  <RecipientField selected={recipients} onSelectedChange={setRecipients} channel={channel} />
                   {channel === "email" && (
                     <>
                       <ComposeField
