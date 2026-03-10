@@ -22,7 +22,11 @@ import { Button } from "@/components/ui/button";
 import ContentCard from "./ContentCard";
 import type { ContentItem } from "@/types/content";
 import type { ContentDistribution } from "./settings/ContentDistributionSettings";
-import UTMSettings, { type UTMMode, type UTMParams, EMPTY_UTM } from "./settings/UTMSettings";
+import LinkTrackingSettings, {
+  type TrackingConfig,
+  type ContentTrackingOverride,
+  EMPTY_TRACKING,
+} from "./settings/LinkTrackingSettings";
 
 export type ContentAccessMode = "available" | "grant-all";
 
