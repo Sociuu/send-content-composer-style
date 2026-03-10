@@ -151,6 +151,7 @@ const UTMSettings = ({
   onSharedParamsChange,
   perContentParams,
   onPerContentParamsChange,
+  embedded = false,
 }: UTMSettingsProps) => {
   const [expandedContent, setExpandedContent] = useState<string | null>(
     linkContentIds[0] || null
@@ -158,18 +159,22 @@ const UTMSettings = ({
 
   if (linkContentIds.length === 0) return null;
 
-  return (
-    <div className="border-b px-4 py-3">
-      <div className="mb-2 flex items-center gap-1.5">
-        <Tag className="h-3 w-3 text-muted-foreground" />
-        <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          UTM Parameters
-        </label>
-      </div>
+  const content = (
+    <>
+      {!embedded && (
+        <div className="mb-2 flex items-center gap-1.5">
+          <Tag className="h-3 w-3 text-muted-foreground" />
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            UTM Parameters
+          </label>
+        </div>
+      )}
 
-      <p className="mb-2.5 text-[10px] leading-snug text-muted-foreground">
-        Add tracking parameters to link-type content URLs. Use merge tags for dynamic values.
-      </p>
+      {!embedded && (
+        <p className="mb-2.5 text-[10px] leading-snug text-muted-foreground">
+          Add tracking parameters to link-type content URLs. Use merge tags for dynamic values.
+        </p>
+      )}
 
       {/* Mode selector — only when multiple links */}
       {linkContentIds.length > 1 && (
